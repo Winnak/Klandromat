@@ -1,4 +1,6 @@
-<?php require_once("template/header.php");
+<?php
+session_start();
+
 require("config.php");
 
 if (isset($_GET["code"]) && isset($_GET["username"])) {
@@ -24,17 +26,9 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
             $_SESSION["auid"]          = $_GET["username"];
             $_SESSION["oauth-code"]    = $_GET["code"];
             $_SESSION["oauth-success"] = true;
-            header("Location: /" . $_GET["username"] . "/");
-            die();
+            header("Location: /");
+            // header("Location: /" . $_GET["username"] . "/"); // TODO: routing
         }
     }
 }
-else{
-    failure:
-    echo '<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Invalid login.</div>';
-
-    header("refresh:60;url=index.php");
-}
-
-
-require_once("template/footer.php"); ?>
+?>
