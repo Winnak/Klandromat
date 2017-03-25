@@ -2,7 +2,6 @@
 session_start();
 require_once("config.php");
 
-
 $paths = preg_split('/\//', $_SERVER['REQUEST_URI'], -1, PREG_SPLIT_NO_EMPTY);
 
 function route_to($controller, 
