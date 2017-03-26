@@ -23,9 +23,22 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
     if ($result !== FALSE) { 
         if(strpos($http_response_header[0], "200"))
         {
-            $_SESSION["auid"]          = $_GET["username"];
-            $_SESSION["oauth-code"]    = $_GET["code"];
-            $_SESSION["oauth-success"] = true;
+            $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
+
+            $auid = $db->real_escape_string($_GET["username"]);
+            $sql = "SELECT * FROM team WHERE `auid` = '$auid' LIMIT 1";
+            $result = $db->query($sql);
+            $row = $result->fetch_array(MYSQLI_ASSOC);
+            
+            if($row) { // A person that is in the database.
+                $_SESSION["auid"]          = $_GET["username"];
+                $_SESSION["oauth-code"]    = $_GET["code"];
+                $_SESSION["oauth-success"] = $_GET["username"] === $row["auid"];
+            }
+            
+            $result->free();
+            $db->close();
+
             header("Location: /" . SITE_ROOT . "/"  . $_GET["username"]);
         }
     }

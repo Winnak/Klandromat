@@ -1,10 +1,6 @@
-<?php
-foreach ($arguements as $key => $value) {
-    echo $value . '.<br>';
-}
-
-echo "Logged in! <br>Hello ";
-echo $_SESSION["auid"] . '.<br>';
-echo '<a href="logout">Logout</a>';
-
+<br>Logged in! <br>Hello <?php
+var_dump($arguements);
 ?>
+.
+<br>
+<a href="/<?php echo SITE_ROOT; ?>/logout">Logout</a>
