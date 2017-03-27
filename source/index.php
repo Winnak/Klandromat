@@ -1,6 +1,7 @@
 <?php 
 session_start();
 require_once("config.php");
+header('Content-type: text/html; charset=UTF-8');
 
 $paths = preg_split('/\//', $_SERVER['REQUEST_URI'], -1, PREG_SPLIT_NO_EMPTY);
 
@@ -21,7 +22,7 @@ if (isset($_SESSION["oauth-success"])) { // logged in
             header("Location: /" . SITE_ROOT . "/" . $_SESSION["auid"]);
         } else {
             $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
-
+            $db->set_charset("utf8");
             $auid = $db->real_escape_string($paths[1]);
             $sql = "SELECT * FROM team WHERE `auid` = '$auid' LIMIT 1";
             $result = $db->query($sql);
