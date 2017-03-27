@@ -7,7 +7,8 @@ $paths = preg_split('/\//', $_SERVER['REQUEST_URI'], -1, PREG_SPLIT_NO_EMPTY);
 
 function route_to($controller, 
     $arguements = array(),
-    $header_stuff = array("title" => "Klandromat"))
+    $header_stuff = array("title" => "Klandromat"),
+    $footer_stuff = array())
 {
     require_once("template/header.php");
     require_once("routes/" . $controller);
@@ -32,7 +33,12 @@ if (isset($_SESSION["oauth-success"])) { // logged in
                 if($_SESSION["auid"] === $row["auid"]) { // the logged in user
                     route_to("user.php", 
                         $row, 
-                        ["title" => $row["name"] . " - Klandromat"]);
+                        ["title" => $row["name"] . " - Klandromat",
+                         "scripts" => [
+                             "https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js",
+                             "https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
+                             ]
+                        ]);
                 } else { // logged in, looking at another user.
                     route_to("user.php", 
                         $row, 
