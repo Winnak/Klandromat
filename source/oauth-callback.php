@@ -26,7 +26,7 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
             $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
 
             $auid = $db->real_escape_string($_GET["username"]);
-            $sql = "SELECT * FROM team WHERE `auid` = '$auid' LIMIT 1";
+            $sql = "SELECT * FROM student WHERE `auid` = '$auid' LIMIT 1";
             $result = $db->query($sql);
             $row = $result->fetch_array(MYSQLI_ASSOC);
             

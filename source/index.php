@@ -25,7 +25,7 @@ if (isset($_SESSION["oauth-success"])) { // logged in
             $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
             $db->set_charset("utf8");
             $auid = $db->real_escape_string($paths[1]);
-            $sql = "SELECT * FROM team WHERE `auid` = '$auid' LIMIT 1";
+            $sql = "SELECT * FROM student WHERE `auid` = '$auid' LIMIT 1";
             $result = $db->query($sql);
             $row = $result->fetch_array(MYSQLI_ASSOC);
 
