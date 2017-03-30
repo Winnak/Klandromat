@@ -30,16 +30,17 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
             $result = $db->query($sql);
             $row = $result->fetch_array(MYSQLI_ASSOC);
             
+            $result->free();
+            $db->close();
+            
             if($row) { // A person that is in the database.
                 $_SESSION["auid"]          = $_GET["username"];
                 $_SESSION["oauth-code"]    = $_GET["code"];
                 $_SESSION["oauth-success"] = $_GET["username"] === $row["auid"];
+                header("Location: /" . SITE_ROOT . "/"  . $_GET["username"]);
+            } else {
+                header("Location: /" . SITE_ROOT . "/");
             }
-            
-            $result->free();
-            $db->close();
-
-            header("Location: /" . SITE_ROOT . "/"  . $_GET["username"]);
         }
     }
 }
