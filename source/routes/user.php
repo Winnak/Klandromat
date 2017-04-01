@@ -15,8 +15,6 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
             $klandring_table .= "<tr><td>" . $row["verdictdate"] 
                                 . "</td><td>" . $row["title"]
-
-
                                 . "</td><td>" . ($row["verdict"] == 0 ? $row["from"] . "</td style='color: grey'><td>" . $row["to"] . "</td style='color: grey'><td>" . "?":
                                                 ($row["verdict"] == 1 ? "<b style='color: #228822'>" . $row["from"] . "</b></td><td style='color: red'>" . $row["to"] . "</td><td>" . ($row["to"] == $id ? "$" : ""):
                                                 ($row["verdict"] == 2 ? $row["from"] . "</td style='color: red'><td><b style='color: #228822'>" . $row["to"] . "</b>" . "</td><td>" . ($row["to"] == $id ? "" : "$"):
