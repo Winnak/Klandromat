@@ -14,10 +14,12 @@ if ($result->num_rows > 0) {
     $klandring_table .= "<table class='table'><thead><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody>";
     while($row = $result->fetch_assoc()) {
             $klandring_table .= "<tr><td>" . $row["verdictdate"] 
-                                . "</td><td>" . $row["title"] 
-                                . "</td><td>" . $row["from"] 
-                                . "</td><td>" . $row["to"] 
-                                . "</td><td>" . $row["verdict"]
+                                . "</td><td>" . $row["title"]
+                                . "</td><td>" . ($row["verdict"] == 0 ? $row["from"] . "</td style='color: grey'><td>" . $row["to"] . "</td style='color: grey'><td>" . "?":
+                                                ($row["verdict"] == 1 ? "<b style='color: #228822'>" . $row["from"] . "</b></td><td style='color: red'>" . $row["to"] . "</td><td>" . ($row["to"] == $id ? "$" : ""):
+                                                ($row["verdict"] == 2 ? $row["from"] . "</td style='color: red'><td><b style='color: #228822'>" . $row["to"] . "</b>" . "</td><td>" . ($row["to"] == $id ? "" : "$"):
+                                                ($row["verdict"] == 3 ? "<b style='color: #cfcf00'>" . $row["from"] . "</b></td><td><b style='color: #cfcf00'>" . $row["to"] . "</b>" . "</td><td>" . "$":
+                                                "ERROR?!"))))
                                 . "</td><td>" . ($row["paid"] == 1 ? "betalt" : "ikke betalt") . "</td></tr>";
         if ($row["verdict"] == 3) {
             $losings += 5 * (1 - $row["paid"]);
