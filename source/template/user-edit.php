@@ -1,4 +1,4 @@
-<form action="/<?php echo SITE_ROOT . "/" . $arguements["auid"]; ?>/edit" id="edit-user">
+<form action="/<?php echo $arguements["auid"]; ?>/edit" id="edit-user">
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">@</span>

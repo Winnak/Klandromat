@@ -16,15 +16,15 @@ function route_to($controller,
 }
 
 if (isset($_SESSION["oauth-success"])) { // logged in
-    if ($paths[1] === "logout") {
+    if ($paths[0] === "logout") {
         require_once("routes/logout.php");
     } else if ($_SESSION["oauth-success"]) {
-        if (count($paths) === 1) {
-            header("Location: /" . SITE_ROOT . "/" . $_SESSION["auid"]);
+        if (count($paths) === 0) {
+            header("Location: /" . $_SESSION["auid"]);
         } else {
             $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
             $db->set_charset("utf8");
-            $auid = $db->real_escape_string($paths[1]);
+            $auid = $db->real_escape_string($paths[0]);
             $sql = "SELECT * FROM student WHERE `auid` = '$auid' LIMIT 1";
             $result = $db->query($sql);
             $row = $result->fetch_array(MYSQLI_ASSOC);
@@ -58,6 +58,8 @@ if (isset($_SESSION["oauth-success"])) { // logged in
             array(),
             ["title" => "Signup! - Klandromat"]);
     }
+} else if(count($paths) !== 0) {
+    header("Location: /");
 } else { // not logged in.
     route_to("login.php");
 }

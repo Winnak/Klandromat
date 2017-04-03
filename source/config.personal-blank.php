@@ -1,8 +1,6 @@
 <?php 
-define("LABEL_TEAM","Dat5.1");
-
 // OAUTH secrets
-define("OAUTH_CONSUMER_SECRET","");
+define("OAUTH_CONSUMER_SECRET",""); // Leave blank for now.
 
 // MYSQL
 define("MYSQL_PROVIDER", "");

@@ -9,7 +9,7 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
         array(
             "client_id"     => OAUTH_CLIENT_ID,
             // "client_secret" => OAUTH_CLEINT_SECRET,
-            "redirect_uri"  => "http://$_SERVER[HTTP_HOST]/" . SITE_ROOT . "/"  . $_GET["username"] . "/",
+            "redirect_uri"  => "http://$_SERVER[HTTP_HOST]/" . $_GET["username"] . "/",
             "grant_type"    => "authorization_code",
             "username"      => $_GET["username"],
             "code"          => $_GET["code"]
@@ -37,9 +37,9 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
                 $_SESSION["auid"]          = $_GET["username"];
                 $_SESSION["oauth-code"]    = $_GET["code"];
                 $_SESSION["oauth-success"] = $_GET["username"] === $row["auid"];
-                header("Location: /" . SITE_ROOT . "/"  . $_GET["username"]);
+                header("Location: /"  . $_GET["username"]);
             } else {
-                header("Location: /" . SITE_ROOT . "/");
+                header("Location: /");
             }
         }
     }

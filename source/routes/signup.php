@@ -11,9 +11,9 @@ Hvis du mener dette er en fejl, så kan du komme til en holdets time og få det 
 <br>
 <br><a href="/<?php 
 if (isset($arguements["auid"])) {
-    echo SITE_ROOT . "/" . $_SESSION["auid"];
+    echo "/" . $_SESSION["auid"];
     echo "/\">Tilbage til din egen side</a>";
 } else {
-    echo SITE_ROOT . "/logout\">Log ud</a>";
+    echo "/logout\">Log ud</a>";
 }
 ?>

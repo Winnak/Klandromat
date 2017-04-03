@@ -1,4 +1,4 @@
-<h3><?php echo $arguements["name"] ?></h3><a href="/<?php echo SITE_ROOT; ?>/logout">Logout</a> 
+<h3><?php echo $arguements["name"] ?></h3><a href="/logout">Logout</a> 
 <br>
 <?php 
 $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
