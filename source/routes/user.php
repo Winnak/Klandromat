@@ -1,5 +1,17 @@
-<h3><?php echo $arguements["name"] ?></h3><a href="/logout">Logout</a> 
-<br>
+<h3><?php echo $arguements["name"] ?></h3>
+<p>
+<i class="glyphicon glyphicon-barcode"></i> AU-ID: <?php echo $arguements["auid"]; ?>. <br>
+<i class="glyphicon glyphicon-envelope"></i> E-mail: <?php echo $arguements["email"]; ?>. <br>
+<i class="glyphicon glyphicon-earphone"></i> Telefon: <?php echo ((sizeof($arguements["phone"]) !== 0) ? sprintf('+45 %04d %04d', $arguements["phone"] / 10000, $arguements["phone"] % 10000) : "Telefon nummer ikke sat")?>. <br>
+<i class="glyphicon glyphicon-credit-card"></i> Årskort: <?php echo $arguements["year"]; ?>. <br>
+</p>
+<?php if($arguements["auid"] == $_SESSION["auid"]) : ?>
+<p>
+<a href="/<?php echo $arguements["auid"]; ?>/edit"><i class="glyphicon glyphicon-pencil"></i> Ret bruger oplysninger.</a><br>
+<a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Log ud.</a> 
+</p>
+<?php endif; ?>
+
 <?php
 $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
 $db->set_charset("utf8");
@@ -27,13 +39,13 @@ if ($result->num_rows > 0) {
                 $klandring_table .= "<td><div class='tie'>$from</div></td><td><div class='tie'>$to</div></td>";
                 break;
             case 1:
-                $klandring_table .= "<td><div class='loss'>$from $</div></td><td><div class='win'>$to</div></td>";
+                $klandring_table .= "<td><div class='loss'>$ $from</div></td><td><div class='win'>$to</div></td>";
                 break;
             case 2:
                 $klandring_table .= "<td><div class='win'>$from</div></td><td><div class='loss'>$to $</div></td>";
                 break;
             case 3:
-                $klandring_table .= "<td><div class='tie'>$from $</div></td><td><div class='tie'>$to $</div></td>";
+                $klandring_table .= "<td><div class='tie'>$ $from</div></td><td><div class='tie'>$to $</div></td>";
                 break;
         }
 
@@ -52,6 +64,9 @@ if ($result->num_rows > 0) {
         }
     }
     $klandring_table .= "</tbody></table>";
+    
+    $result->free();
+    $db->close();
 }
 ?>
 <div class="panel panel-default">
@@ -61,8 +76,4 @@ if ($result->num_rows > 0) {
     </div>
     <?php echo $klandring_table; ?>
 </div>
-
-<?php
-var_dump($arguements);
-?>
 <br>

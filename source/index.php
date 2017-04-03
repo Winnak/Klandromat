@@ -3,7 +3,7 @@ session_start();
 require_once("config.php");
 header('Content-type: text/html; charset=UTF-8');
 
-$paths = preg_split('/\//', $_SERVER['REQUEST_URI'], -1, PREG_SPLIT_NO_EMPTY);
+$paths = preg_split('/\//', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), -1, PREG_SPLIT_NO_EMPTY);
 
 function route_to($controller, 
     $arguements = array(),
@@ -31,14 +31,20 @@ if (isset($_SESSION["oauth-success"])) { // logged in
 
             if($row) { // A person that is in the database.
                 if($_SESSION["auid"] === $row["auid"]) { // the logged in user
-                    route_to("user.php", 
-                        $row, 
-                        ["title" => $row["name"] . " - Klandromat",
-                         "scripts" => [
-                             "https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js",
-                             "https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
-                             ]
-                        ]);
+                    if (count($paths) === 2 && $paths[1] === "edit") {
+                        route_to("user-edit.php", 
+                            $row, 
+                            ["title" => $row["name"] . " - Klandromat",
+                            "scripts" => [
+                                "https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js",
+                                "https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
+                                ]
+                            ]);
+                    } else {
+                        route_to("user.php", 
+                            $row, 
+                            ["title" => $row["name"] . " - Klandromat"]);
+                    }
                 } else { // logged in, looking at another user.
                     route_to("user.php", 
                         $row, 
