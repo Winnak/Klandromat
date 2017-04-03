@@ -5,3 +5,14 @@ footer {
 section {
     min-height: 300px;
 }
+
+/* Klandrings table */
+.win {
+    font-weight: 700;
+}
+
+/* .loss { } */
+
+.tie {
+    font-weight: 600;
+}
