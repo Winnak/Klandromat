@@ -4,12 +4,28 @@ function can_edit($args) {
         && ($args["verdict"] == 0);
 }
 function can_see($args) {
-    return (($_SESSION["student-id"] === $args["from"])
-        && ($args["verdict"] == 0))
-        || ($args["verdict"] > 0);
+    return can_edit($args) // If we can edit it
+        || $args["verdict"] > 0; // or it has been decided.
 }
 ?>
 <?php if($_SERVER['REQUEST_METHOD'] === "POST") : // User edits this klandring ?>
+<?php 
+if(!can_edit($arguements)) {
+    echo "WHAT THE FUCK DID YOU DO!";
+    die();
+}
+$db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
+$db->set_charset("utf8");
+
+$title       = $db->real_escape_string($_POST["title"]);
+$to          = $db->real_escape_string($_POST["klandret"]);
+$description = $db->real_escape_string($_POST["description"]);
+$sql = "UPDATE klandring SET title = '$title', description = '$description', `to` = '$to' WHERE id = " . $arguements["id"] . ";";
+
+$db->query($sql);
+$db->close();
+header("Location: /klandring/" .  $arguements["id"]);
+?>
 <?php else: // User is just view this klanndring ?>
 <div class="panel panel-default">
     <div class="panel-heading">Klandring</div>
