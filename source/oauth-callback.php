@@ -34,6 +34,7 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
             $db->close();
             
             if($row) { // A person that is in the database.
+                $_SESSION["student-id"]    = $row["id"];
                 $_SESSION["auid"]          = $_GET["username"];
                 $_SESSION["oauth-code"]    = $_GET["code"];
                 $_SESSION["oauth-success"] = $_GET["username"] === $row["auid"];
