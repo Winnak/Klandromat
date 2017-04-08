@@ -1,14 +1,11 @@
 <?php if($_SERVER['REQUEST_METHOD'] === "POST") : ?>
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
-    
     $id = $arguements["id"];
     $email = $db->real_escape_string($_POST["email"]);
     $phone = $db->real_escape_string($_POST["phone"]);
 
     $sql = "UPDATE student SET email = '$email', phone = $phone WHERE student.id = $id;";
-    $db->query($sql);
 
     if ($db->query($sql) === TRUE) {
         header("Location: /"  . $arguements["auid"]);

@@ -23,15 +23,12 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
     if ($result !== FALSE) { 
         if(strpos($http_response_header[0], "200"))
         {
-            $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
-
             $auid = $db->real_escape_string($_GET["username"]);
             $sql = "SELECT * FROM student WHERE `auid` = '$auid' LIMIT 1";
             $result = $db->query($sql);
             $row = $result->fetch_array(MYSQLI_ASSOC);
             
             $result->free();
-            $db->close();
             
             if($row) { // A person that is in the database.
                 $_SESSION["student-id"]    = $row["id"];

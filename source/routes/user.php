@@ -13,8 +13,6 @@
 <?php endif; ?>
 
 <?php
-$db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
-$db->set_charset("utf8");
 $id = $arguements["id"];
 $sql = "SELECT * FROM `klandring` WHERE (`from` = $id OR `to` = $id)";
 $result = $db->query($sql);
@@ -66,7 +64,6 @@ if ($result->num_rows > 0) {
     $klandring_table .= "</tbody></table>";
     
     $result->free();
-    $db->close();
 }
 ?>
 <div class="panel panel-default">

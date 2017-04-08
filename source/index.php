@@ -2,6 +2,8 @@
 session_start();
 require_once("config.php");
 header('Content-type: text/html; charset=UTF-8');
+$db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
+$db->set_charset("utf8");
 
 $paths = preg_split('/\//', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), -1, PREG_SPLIT_NO_EMPTY);
 
@@ -22,8 +24,6 @@ if (isset($_SESSION["oauth-success"])) { // logged in
         if (count($paths) === 0) {
             header("Location: /" . $_SESSION["auid"]);
         } else {
-            $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
-            $db->set_charset("utf8");
             if (substr($paths[0], 0, 2) === "au") {
                 $auid = $db->real_escape_string($paths[0]);
                 $sql = "SELECT * FROM student WHERE `auid` = '$auid' LIMIT 1";
@@ -82,7 +82,6 @@ if (isset($_SESSION["oauth-success"])) { // logged in
                     $result->free();
                 }
             }
-            $db->close();
         }
     } else { // a person who is not in the database.
         route_to("signup.php", 
@@ -94,4 +93,5 @@ if (isset($_SESSION["oauth-success"])) { // logged in
 } else { // not logged in.
     route_to("login.php");
 }
+$db->close();
  ?>
