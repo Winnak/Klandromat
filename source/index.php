@@ -12,6 +12,7 @@ function route_to($controller,
     $header_stuff = array("title" => "Klandromat"),
     $footer_stuff = array())
 {
+    global $db;
     require_once("template/header.php");
     require_once("routes/" . $controller);
     require_once("template/footer.php");
