@@ -1,17 +1,16 @@
 <h3><?php echo $arguements["name"] ?></h3>
-<p>
+<h4><a href="/<?php echo $arguements["auid"]; ?>/create"><i class="glyphicon glyphicon-plus"></i> Ny klandring</a></h4>
 <i class="glyphicon glyphicon-barcode"></i> AU-ID: <?php echo $arguements["auid"]; ?>. <br>
 <i class="glyphicon glyphicon-envelope"></i> E-mail: <?php echo $arguements["email"]; ?>. <br>
 <i class="glyphicon glyphicon-earphone"></i> Telefon: <?php echo ((sizeof($arguements["phone"]) !== 0) ? sprintf('+45 %04d %04d', $arguements["phone"] / 10000, $arguements["phone"] % 10000) : "Telefon nummer ikke sat")?>. <br>
 <i class="glyphicon glyphicon-credit-card"></i> Årskort: <?php echo $arguements["year"]; ?>. <br>
-</p>
+
 <?php if($arguements["auid"] == $_SESSION["auid"]) : ?>
 <p>
-<a href="/<?php echo $arguements["auid"]; ?>/edit"><i class="glyphicon glyphicon-pencil"></i> Ret bruger oplysninger.</a><br>
-<a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Log ud.</a> 
+<a href="/<?php echo $arguements["auid"]; ?>/edit"><i class="glyphicon glyphicon-pencil"></i> Ret brugeroplysninger.</a><br>
+<a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Log ud.</a>
 </p>
 <?php endif; ?>
-
 <?php
 $id = $arguements["id"];
 $sql = "SELECT * FROM `klandring` WHERE (`from` = $id OR `to` = $id)";
@@ -69,7 +68,7 @@ if ($result->num_rows > 0) {
 <div class="panel panel-default">
     <div class="panel-heading">Klandringer</div>
     <div class="panel-body">
-        <p>Du skylder <?php echo $losings ?>kr.</p>
+        Du skylder <?php echo $losings ?>kr.
     </div>
     <?php echo $klandring_table; ?>
 </div>
