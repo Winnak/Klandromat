@@ -42,7 +42,14 @@ if (isset($_SESSION["oauth-success"])) { // logged in
                                     "https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
                                     ]
                                 ]);
-                        } else {
+                        } else if (count($paths) === 2 && $paths[1] === "create") {
+                            route_to("klandring-create.php", 
+                                $row, 
+                                ["title" => "Ny klandring - Klandromat",
+                                "scripts" => []
+                                ]);
+                        }
+                        else {
                             route_to("user.php", 
                                 $row, 
                                 ["title" => $row["name"] . " - Klandromat"]);
