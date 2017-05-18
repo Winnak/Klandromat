@@ -48,8 +48,25 @@ if (isset($_SESSION["oauth-success"])) { // logged in
                                 ["title" => "Ny klandring - Klandromat",
                                 "scripts" => []
                                 ]);
-                        }
-                        else {
+                        } else if (count($paths) === 2 && $paths[1] === "info") {
+                            route_to("user-info.php", 
+                                $row, 
+                                ["title" => $row["name"],
+                                "scripts" => []
+                                ]);
+                        } else if (count($paths) === 2 && $paths[1] === "teamhistory") {
+                            route_to("history.php", 
+                                $row, 
+                                ["title" => "Hold - HOLDNAVN",
+                                "scripts" => []
+                                ]);
+                        } else if (count($paths) === 3 && $paths[1] === "show") {
+                            route_to("show-klandring.php", 
+                                $row, 
+                                ["title" => "Klandring - ". $paths[2],
+                                "scripts" => []
+                                ]);
+                        } else {
                             route_to("user.php", 
                                 $row, 
                                 ["title" => $row["name"] . " - Klandromat"]);

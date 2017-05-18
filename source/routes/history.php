@@ -1,13 +1,9 @@
-<h3><?php echo $arguements["name"] ?></h3>
-<h4><a href="/<?php echo $arguements["auid"]; ?>/create"><i class="glyphicon glyphicon-plus"></i> Ny klandring</a></h4>
-<br>
 <?php if($arguements["auid"] == $_SESSION["auid"]) : ?>
 <?php endif; ?>
 <?php
 $id = $arguements["id"];
-$sql = "SELECT * FROM `klandring` WHERE (`to` != $id AND verdict = 0)";
+$sql = "SELECT * FROM `klandring` WHERE (verdict != 0)";
 $result = $db->query($sql);
-
 
 $losings = 0;
 $klandring_table = "";
@@ -58,10 +54,8 @@ if ($result->num_rows > 0) {
     $result->free();
 }
 ?>
-
-
 <div class="panel panel-default">
-    <div class="panel-heading">Upcoming klandringer for hold "LAV HOLD"</div>
+    <div class="panel-heading">Klandringshistorik for "LAV HOLD"</div>
     <?php echo $klandring_table; ?>
 </div>
 <br>
