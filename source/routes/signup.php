@@ -1,6 +1,6 @@
 Gendkendte ikke <?php 
-if (isset($arguements["auid"])) {
-    echo $arguements["auid"];
+if (isset($arguments["auid"])) {
+    echo $arguments["auid"];
 } else {
     echo "auidet";
 }
@@ -10,7 +10,7 @@ if (isset($arguements["auid"])) {
 Hvis du mener dette er en fejl, så kan du komme til en holdets time og få det rettet.
 <br>
 <br><a href="/<?php 
-if (isset($arguements["auid"])) {
+if (isset($arguments["auid"])) {
     echo "/" . $_SESSION["auid"];
     echo "/\">Tilbage til din egen side</a>";
 } else {

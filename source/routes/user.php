@@ -1,67 +1,87 @@
-<h3><?php echo $arguements["name"] ?></h3>
-<h4><a href="/<?php echo $arguements["auid"]; ?>/create"><i class="glyphicon glyphicon-plus"></i> Ny klandring</a></h4>
-<br>
-<?php if($arguements["auid"] == $_SESSION["auid"]) : ?>
-<?php endif; ?>
-<?php
-$id = $arguements["id"];
-$sql = "SELECT * FROM `klandring` WHERE (`to` != $id AND verdict = 0)";
-$result = $db->query($sql);
-
-
-$losings = 0;
-$klandring_table = "";
-
-if ($result->num_rows > 0) {
-    $klandring_table .= "<table class='table table-hover'><thead><tr><th></th><th>Titel</th><th>Klandrer</th><th>Klandret</th><th>Status</th></tr></thead><tbody>";
-    while ($row = $result->fetch_assoc()) {
-        if ($row["verdict"] === 0 && $row["from"] !== $id) {
-            // Hide upcomming klandringer for the accused.
-            continue;
-        }
-        $from = idToName($row["from"],$db);
-        $to = idToName($row["to"],$db);
-
-        $klandring_table .= "<tr onclick=\"window.document.location='/" . $arguements["auid"] . "/show/". $row["id"]."'\"><td>" . $row["verdictdate"] . "</td><td>" . $row["title"] . "</td>";
-        switch ($row["verdict"]) {
-            default:
-            case 0:
-                $klandring_table .= "<td><div class='tie'>$from</div></td><td><div class='tie'>$to</div></td>";
-                break;
-            case 1:
-                $klandring_table .= "<td><div class='loss'>$ $from</div></td><td><div class='win'>$to</div></td>";
-                break;
-            case 2:
-                $klandring_table .= "<td><div class='win'>$from</div></td><td><div class='loss'>$to $</div></td>";
-                break;
-            case 3:
-                $klandring_table .= "<td><div class='tie'>$ $from</div></td><td><div class='tie'>$to $</div></td>";
-                break;
-        }
-
-        $klandring_table .= "<td>" . ($row["paid"] == 1 ? "betalt" : "ikke betalt") . "</td></tr>";
-
-        if ($row["verdict"] == 3) {
-            $losings += 5 * (1 - $row["paid"]);
-        } elseif ($row["to"] == $id) {
-            if ($row["verdict"] == 1) {
-                $losings += 5 * (1 - $row["paid"]);
-            }
-        } elseif ($row["from"] == $id) {
-            if ($row["verdict"] == 2) {
-                $losings += 5 * (1 - $row["paid"]);
-            }
-        }
-    }
-    $klandring_table .= "</tbody></table>";
-    
-    $result->free();
-}
-?>
-
+<h3><?= $arguments["name"] ?></h3>
+<h4 style="line-height:2"><a href="/klandring/create"><i class="glyphicon glyphicon-plus"></i> Ny klandring</a></h4>
 
 <div class="panel panel-default">
     <div class="panel-heading">Upcoming klandringer for hold "LAV HOLD"</div>
-    <?php echo $klandring_table; ?>
+
+<?php
+$sql = "SELECT * FROM `klandring` WHERE ((`to` != $arguments[id] OR `from` = $arguments[id]) AND (`to` != $arguments[id] AND verdict = 0))";
+$result = $db->query($sql);
+
+$klandringer = [];
+while ($row = $result->fetch_assoc()) {
+    $klandringer[] = $row;
+}
+
+$ids = [];
+foreach ($klandringer as $klandring) {
+    $ids[] = intval($klandring["from"]);
+    $ids[] = intval($klandring["to"]);
+}
+
+// todo: solve in one go, instead of 3.
+$ids = array_values(array_unique($ids));
+sort($ids);
+
+$users = array_combine($ids, get_user_infos_arr($ids));
+
+$losings = 0;
+?>
+<?php if($result->num_rows > 0) : ?>
+    <table class='table table-hover'>
+        <thead>
+            <tr>
+                <th>Titel</th>
+                <th>Klandrer</th>
+                <th>Klandret</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+<?php foreach ($klandringer as $row) : ?>
+            <tr onclick="window.document.location='/klandring/<?= $row["id"]?>'">
+                <td><?= $row["title"]?></td>
+<?php switch($row["verdict"]): ?>
+<?php default: ?>
+<?php case 0: ?>
+                <td><i><?= $users[$row["from"]]["name"] ?></i></td>
+                <td><i><?= $users[$row["to"]]["name"] ?></i></td>
+<?php break; ?>
+<?php case 1: ?>
+                <td><div class="win"><?= $users[$row["from"]]["name"] ?></div></td>
+                <td><div class="loss"><?= $users[$row["to"]]["name"] ?></div></td>
+<?php break; ?>
+<?php case 2: ?>
+                <td><div class="loss"><?= $users[$row["from"]]["name"] ?></div></td>
+                <td><div class="win"><?= $users[$row["to"]]["name"] ?></div></td>
+<?php break; ?>
+<?php case 3: ?>
+                <td><div class="tie"><?= $users[$row["from"]]["name"] ?></div></td>
+                <td><div class="tie"><?= $users[$row["to"]]["name"] ?></div></td>
+<?php break; ?>
+<?php endswitch; ?>
+                <td><?= $row["verdict"] == 0 ? "ikke afgjort" : 
+                        ($row["paid"] ? "betalt" : "ikke betalt") ?></td>
+            </tr>
+<?php
+/* 
+ * Calculate the total debt.
+ */
+if ($row["verdict"] == 3) {
+    $losings += 5 * (1 - $row["paid"]);
+} elseif ($row["to"] == $arguments["id"]) {
+    if ($row["verdict"] == 1) {
+        $losings += 5 * (1 - $row["paid"]);
+    }
+} elseif ($row["from"] == $arguments["id"]) {
+    if ($row["verdict"] == 2) {
+        $losings += 5 * (1 - $row["paid"]);
+    }
+}
+?>
+<?php endforeach ?>
+        </tbody>
+    </table>
+    <br>
+<?php endif ?>
 </div>
-<br>
