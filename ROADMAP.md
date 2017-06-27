@@ -6,12 +6,11 @@
 
 ## Backend
 * Create a restful api that gives sends JSON.
-* Create a database klandringer-view for the `user.php` to make navigation simpler.
 * Create a `database-setup.php` that sets up the database for first time developers.
 * Create a route for the team.
+* Create page for editing klandringer.
 * Manage user roles
 * Create admin control board.
-* Look for better database solution than opening and closing it all the time.
 * Create "upload media to klandring"
 
 ## Frontend
