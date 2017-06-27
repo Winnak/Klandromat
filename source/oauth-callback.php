@@ -9,14 +9,14 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
         array(
             "client_id"     => OAUTH_CLIENT_ID,
             // "client_secret" => OAUTH_CLEINT_SECRET,
-            "redirect_uri"  => "http://$_SERVER[HTTP_HOST]/" . $_GET["username"] . "/",
+            "redirect_uri"  => (isset($_SERVER["HTTPS"]) ? "https" : "http")."://$_SERVER[HTTP_HOST]/$_GET[username]/",
             "grant_type"    => "authorization_code",
             "username"      => $_GET["username"],
             "code"          => $_GET["code"]
         )
     );
 
-    $url = OAUTH_PROVIDER . "token?" . $query_params;
+    $url = OAUTH_PROVIDER . "token?$query_params";
 
     $result = file_get_contents($url);
 
@@ -30,7 +30,7 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
             $sql = "SELECT id, auid, name FROM student WHERE `auid` = '$auid' LIMIT 1";
             $result = $db->query($sql);
             $row = $result->fetch_array(MYSQLI_ASSOC);
-            
+
             $result->free();
             $db->close();
             
