@@ -7,4 +7,6 @@ define("MYSQL_PROVIDER", "");
 define("MYSQL_USER", "");
 define("MYSQL_PASS", "");
 define("MYSQL_DB", "");
+
+define("ULTRA_USERS", []);
 ?>

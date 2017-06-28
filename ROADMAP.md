@@ -12,6 +12,7 @@
 * Manage user roles
 * Create admin control board.
 * Create "upload media to klandring"
+* Create blog/news-style + calender board for team
 
 ## Frontend
 * Create a more fancy front page.

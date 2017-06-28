@@ -30,20 +30,34 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
             $sql = "SELECT id, auid, name FROM student WHERE `auid` = '$auid' LIMIT 1";
             $result = $db->query($sql);
             $row = $result->fetch_array(MYSQLI_ASSOC);
-
             $result->free();
-            $db->close();
-            
+
             if($row) { // A person that is in the database.
+
+                // Get the teams they are involved in.
+                $sql = "SELECT A.*, B.roleid FROM team A
+                        INNER JOIN teamstudent B ON A.id = B.teamid
+                        WHERE B.studentid = $row[id]";
+                $result = $db->query($sql);
+                $teams = [];
+                while($row2 = $result->fetch_array(MYSQLI_ASSOC)) {
+                    $teams[] = $row2;
+                }
+                $result->free();
+
+                // save it to the session so we don't need to look it up later.
                 $_SESSION["student-id"]    = $row["id"];
                 $_SESSION["student-name"]  = $row["name"];
                 $_SESSION["auid"]          = $_GET["username"];
                 $_SESSION["oauth-code"]    = $_GET["code"];
                 $_SESSION["oauth-success"] = $_GET["username"] === $row["auid"];
+                $_SESSION["teams"]         = $teams;
                 header("Location: /$_GET[username]");
             } else {
                 header("Location: /");
             }
+
+            $db->close();
         }
     }
 }
