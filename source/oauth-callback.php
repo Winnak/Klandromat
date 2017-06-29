@@ -52,12 +52,9 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
                 $_SESSION["oauth-code"]    = $_GET["code"];
                 $_SESSION["oauth-success"] = $_GET["username"] === $row["auid"];
                 $_SESSION["teams"]         = $teams;
-                header("Location: /$_GET[username]");
-            } else {
-                header("Location: /");
-            }
-
+            } 
             $db->close();
+            header("Location: /");
         }
     }
 }

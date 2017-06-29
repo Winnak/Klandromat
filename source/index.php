@@ -90,7 +90,7 @@ if (isset($_SESSION["oauth-success"])) { // logged in
                         throw Invalid404Thing("todo");
                     }
                 } else { // logged in, looking at a specific user.
-                    route_to("user-info.php", 
+                    route_to("user-index.php", 
                         $row, 
                         ["title" => $row["name"]]);
                 }
@@ -140,8 +140,21 @@ if (isset($_SESSION["oauth-success"])) { // logged in
                 header("Location: /klandring/create");
             }
         } else {
-            // TODO 404
-            throw Invalid404Thing("todo");
+            $found = false;
+            foreach ($_SESSION["teams"] as $team) {
+                if ($team["slug"] == $paths[0]) {
+                    $found = true;
+                    route_to("team-index.php", 
+                        $team, 
+                        ["title" => $team["name"]]);
+                    break;
+                }
+            }
+
+            if (!$found) {
+                // TODO 404
+                throw Invalid404Thing("todo");
+            }
         }
     }
 } else if(count($paths) !== 0) { 
