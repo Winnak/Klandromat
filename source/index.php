@@ -85,9 +85,7 @@ if (isset($_SESSION["oauth-success"])) { // logged in
                                 ]
                             ]);
                     } else {
-                        // tried to edit another user.
-                        // TODO 404
-                        throw Invalid404Thing("todo");
+                        route_to("404.php", array(), ["title" => "404"]);
                     }
                 } else { // logged in, looking at a specific user.
                     route_to("user-index.php", 
@@ -146,8 +144,7 @@ if (isset($_SESSION["oauth-success"])) { // logged in
             }
 
             if (!$found) {
-                // TODO 404
-                throw Invalid404Thing("todo");
+                route_to("404.php", array(), ["title" => "404"]);
             }
         }
     }
