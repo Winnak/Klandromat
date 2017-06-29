@@ -102,14 +102,8 @@ if (isset($_SESSION["oauth-success"])) { // logged in
         } else if (($paths[0] === "klandring")) {
             if (count($paths) === 2) {
                 if($paths[1] === "create") {
-                    $id = $_SESSION["student-id"];
-                    $sql = "SELECT * FROM student WHERE id = $id LIMIT 1";
-                    $result = $db->query($sql);
-                    $row = $result->fetch_array(MYSQLI_ASSOC);
-                    $result->free();
-
                     route_to("klandring-create.php", 
-                        $row, 
+                        array(), 
                         ["title" => "Ny klandring",
                         "scripts" => []
                         ]);
