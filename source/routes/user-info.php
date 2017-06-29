@@ -17,7 +17,10 @@
         Du skylder <i id="debt"></i> kr.
     </div>
 <?php
-$sql = "SELECT * FROM klandring WHERE (`from` = $arguments[id] OR (`to` = $arguments[id] AND verdict != 0))";
+$sql = "SELECT * FROM `klandring` 
+        WHERE ((`to` = $arguments[id] AND verdict != 0) 
+            OR (`from` = $arguments[id]))";
+
 $result = $db->query($sql);
 
 $klandringer = [];
@@ -96,7 +99,6 @@ if ($row["verdict"] == 3) {
 <?php endforeach ?>
         </tbody>
     </table>
-    <br>
-<script>document.getElementById("debt").innerHTML = <?= $losings ?>;</script>
+    <script>document.getElementById("debt").innerHTML = <?= $losings ?>;</script>
 <?php endif ?>
 </div>
