@@ -1,18 +1,19 @@
-<h3><?= $arguments["name"] ?></h3>
+<h3>Upkommende Klandringer</h3>
 <h4 style="line-height:2"><a href="/klandring/create"><i class="glyphicon glyphicon-plus"></i> Ny klandring</a></h4>
 
 <div class="panel panel-default">
     <div class="panel-heading">Upcoming klandringer for hold "LAV HOLD"</div>
-
 <?php
 
 $your_klandringer = [];
 $their_klandringer = [];
 $ids = [];
 
+$id = $_SESSION["student-id"];
+
 // get all of your klandringer
 $sql = "SELECT * FROM `klandring` 
-        WHERE (`from` = $arguments[id] AND verdict = 0)";
+        WHERE (`from` = $id AND verdict = 0)";
 
 $result = $db->query($sql);
 
@@ -28,7 +29,7 @@ foreach ($your_klandringer as $klandring) {
 
 // get all of their klandringer
 $sql = "SELECT `from` FROM `klandring` 
-        WHERE ((`from` != $arguments[id]) AND (verdict = 0))";
+        WHERE ((`from` != $id) AND (verdict = 0))";
 
 $result = $db->query($sql);
 
@@ -63,14 +64,14 @@ $losings = 0;
             <tr onclick="window.document.location='/klandring/<?= $row["id"]?>'">
                 <td><?= $row["title"]?></td>
                 <td><i><?= $users[$row["from"]]["name"] ?></i></td>
-                <td><i><?= $users[$row["to"]]["name"] ?></i></td>
+                <td><?= $users[$row["to"]]["name"] ?></td>
             </tr>
 <?php endforeach ?>
 <?php foreach ($their_klandringer as $row) : ?>
             <tr>
                 <td></td>
                 <td><?= $users[$row["from"]]["name"] ?></td>
-                <td>XXXX HEMMELIGT XXXX</td>
+                <td>XXXXX HEMMELIGT XXXXX</td>
             </tr>
 <?php endforeach ?>
         </tbody>

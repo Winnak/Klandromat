@@ -38,7 +38,7 @@ if(isset($header_stuff["scripts"])) {
         <ul class="nav navbar-nav">
           <?php if (isset($_SESSION["oauth-success"])) : ?>
             <li><a href="/">Oversigt</a></li>
-            <li><a href="/<?= $_SESSION["auid"] ?>/info">Din bruger</a></li>
+            <li><a href="/<?= $_SESSION["auid"] ?>">Din bruger</a></li>
             <?php foreach ($_SESSION["teams"] as $team) : ?>
             <li><a href="/<?= $team["slug"] ?>"><?= $team["name"] ?></a></li>
             <?php endforeach ?>
