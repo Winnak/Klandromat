@@ -1,8 +1,10 @@
 <h3>Upkommende Klandringer</h3>
 <h4 style="line-height:2"><a href="/klandring/create"><i class="glyphicon glyphicon-plus"></i> Ny klandring</a></h4>
 
+<?php foreach($_SESSION["teams"] as $team) : ?>
+
 <div class="panel panel-default">
-    <div class="panel-heading">Upcoming klandringer for hold "LAV HOLD"</div>
+    <div class="panel-heading"><?= $team["name"] ?></div>
 <?php
 
 $your_klandringer = [];
@@ -13,7 +15,7 @@ $id = $_SESSION["student-id"];
 
 // get all of your klandringer
 $sql = "SELECT * FROM `klandring` 
-        WHERE (`from` = $id AND verdict = 0)";
+        WHERE ((team = $team[id]) AND (`from` = $id AND verdict = 0))";
 
 $result = $db->query($sql);
 
@@ -29,7 +31,7 @@ foreach ($your_klandringer as $klandring) {
 
 // get all of their klandringer
 $sql = "SELECT `from` FROM `klandring` 
-        WHERE ((`from` != $id) AND (verdict = 0))";
+        WHERE ((team = $team[id]) AND ((`from` != $id) AND (verdict = 0)))";
 
 $result = $db->query($sql);
 
@@ -42,11 +44,14 @@ foreach ($their_klandringer as $klandring) {
     $ids[] = intval($klandring["from"]);
 }
 
-// todo: solve in one go, instead of 3.
-$ids = array_values(array_unique($ids));
-sort($ids);
+$users = [];
+if (count($ids)) {
+    // todo: solve in one go, instead of 3.
+    $ids = array_values(array_unique($ids));
+    sort($ids);
 
-$users = array_combine($ids, get_user_infos_arr($ids));
+    $users = array_combine($ids, get_user_infos_arr($ids));
+}
 
 $losings = 0;
 ?>
@@ -80,3 +85,4 @@ $losings = 0;
     <p style="padding: 20px">Ingen klandringer. <a href="/klandring/create">Så se at få oprettet nogle</a></p>
 <?php endif ?>
 </div>
+<?php endforeach ?>
