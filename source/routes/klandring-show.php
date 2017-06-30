@@ -4,7 +4,11 @@ $desc = $arguments['description'];
 
 $involved_parties = get_user_infos(intval($arguments['from']), intval($arguments['to']));
 $from = $to = null;
-if ($arguments['from'] == $involved_parties[0]["id"]) {
+
+if (count($involved_parties) === 1) {
+    $from = $involved_parties[0];
+    $to = $involved_parties[0];
+} else if ($arguments["from"] == $involved_parties[0]["id"]) {
     $from = $involved_parties[0];
     $to = $involved_parties[1];
 } else {
