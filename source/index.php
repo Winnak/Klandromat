@@ -2,6 +2,10 @@
 session_start();
 require_once("config.php");
 header('Content-type: text/html; charset=UTF-8');
+
+define("ROLE_USER", 1);
+define("ROLE_ADMIN", 2);
+
 $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
 $db->set_charset("utf8");
 
@@ -136,9 +140,18 @@ if (isset($_SESSION["oauth-success"])) { // logged in
             foreach ($_SESSION["teams"] as $team) {
                 if ($team["slug"] == $paths[0]) {
                     $found = true;
-                    route_to("team-index.php", 
-                        $team, 
-                        ["title" => $team["name"]]);
+                    if ((count($paths) === 2) && ($paths[1] === "admin") && ($team["roleid"] == ROLE_ADMIN)) {
+                        route_to("team-admin.php", 
+                            $team, 
+                            ["title" => $team["name"] . " admin"]);
+                    } else if (count($paths) === 1) {
+                        route_to("team-index.php", 
+                            $team, 
+                            ["title" => $team["name"]]);
+                    } else {
+                        header("Location: /$team[slug]"); // sanitize url in case it was gibberish.
+                    }
+
                     break;
                 }
             }
