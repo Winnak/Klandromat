@@ -1,4 +1,5 @@
 // var unchanged = { ... } // defined in team-admin.php
+// var slug = "[url]"      // --||--
 var summary = document.getElementById("summary");
 var btnUpdate = document.getElementById("btn-update");
 var btnSubmit = document.getElementById("btn-submit");
@@ -60,18 +61,40 @@ document.getElementById("klandringer").addEventListener("change", function(ev) {
             return;
     }
     btnUpdate.removeAttribute("disabled");
+    btnSubmit.setAttribute("disabled", "");
     addToChangeList(id, text);
 });
 
 btnSubmit.addEventListener("click", function(ev) {
+    if (btnSubmit.hasAttribute("disabled")) { 
+        return;
+    }
+
     btnSubmit.setAttribute("disabled", "");
     summary.innerHTML = "";
 
-    // todo: send changes to server.
+    let http = new XMLHttpRequest();
+    http.open("POST", "/" + slug + "/admin");
+    http.setRequestHeader("Content-Type", "application/json");
+    http.onreadystatechange = function () {
+        if (http.readyState === 4) {
+            if (http.status === 200) {
+                // todo refresh.
+            } else {
+                console.error("Unable to post ...");
+            }
+        }
+    };
+    http.send(JSON.stringify(changes));
+
     changes = {};
 });
 
 btnUpdate.addEventListener("click", function(ev) {
+    if (btnUpdate.hasAttribute("disabled")) { 
+        return;
+    }
+
     btnUpdate.setAttribute("disabled", "");
 
     summary.innerHTML = "";

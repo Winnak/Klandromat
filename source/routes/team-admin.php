@@ -1,4 +1,8 @@
 <?php
+if($_SERVER['REQUEST_METHOD'] === "POST") {
+    die();
+}
+
 $sql = "SELECT * FROM `klandring` WHERE team = $arguments[id]";
 $result = $db->query($sql);
 
@@ -92,7 +96,13 @@ $base .= "$row[id]:{verdict:$row[verdict],verdictdate:\"$row[verdictdate]\",paid
         <div class="btn btn-primary" id="btn-update" disabled>Tjek ændringer</div>
         <div class="btn btn-success" id="btn-submit" disabled>Submit ændringer</div>
     </div>
-    <script><?= substr($base,0,-1)."};" ?></script>
+    <script>
+<?php 
+echo substr($base,0,-1)."};\n";
+echo "var slug=\"$arguments[slug]\";"; 
+?>
+
+    </script>
     <script src="/static/team-admin.js"></script>
 <?php else: ?>
     <p style="padding: 20px">Ingen klandringer. <a href="/klandring/create">Så se at få oprettet nogle</a></p>
