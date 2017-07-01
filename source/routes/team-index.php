@@ -28,7 +28,14 @@ $losings = 0;
 $debt = 0;
 ?>
 <div class="panel panel-default">
-    <div class="panel-heading">Klandringshistorik for <?= $arguments["name"] ?></div>
+    <div class="panel-heading clearfix">
+        <div class="pull-left panel-title" style="padding-top:7.5px;">Klandringshistorik for <?= $arguments["name"] ?></div>
+        <div class="btn-group pull-right">
+        <?php if($arguments["roleid"] == ROLE_ADMIN) {
+            echo "<a href=\"$arguments[slug]/admin\" class=\"btn btn-default\" style=\"\"><i class=\"glyphicon glyphicon-pencil\"> </i> Administrerer</a>";
+        }?>
+        </div>
+    </div>
     <div class="panel-body">
         <p>Holdet har indtjent <i id="total">0</i> kr.</p>
         <p>Holdet skylder <i id="debt">0</i> kr.</p>
