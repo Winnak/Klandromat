@@ -24,7 +24,7 @@ if (count($klandringer)) {
     $users = array_combine($ids, get_user_infos_arr($ids));
 }
 
-$base = "var baseState={";
+$base = "var unchanged={";
 
 function a_checkbox($id, $checked) {
     if ($checked) {
@@ -43,11 +43,6 @@ function b_checkbox($id, $checked) {
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">Håndtering af <?= $arguments["name"] ?></div>
-    <div class="panel-body">
-        <div id="summary"></div>
-        <div class="btn btn-primary" id="btn-update" disabled>Tjek ændringer</div>
-        <div class="btn btn-success" id="btn-submit" disabled>Submit ændringer</div>
-    </div>
 <?php if(count($klandringer) > 0) : ?>
     <table class='table table-hover'>
         <thead>
@@ -89,12 +84,16 @@ function b_checkbox($id, $checked) {
 $base .= "$row[id]:{verdict:$row[verdict],verdictdate:\"$row[verdictdate]\",paid:$row[paid]},"
 ?>
 <?php endforeach ?>
-        <script>
-        <?= substr($base,0,-1)."};" ?>
-        </script>
-        <script src="/static/team-admin.js"></script>
         </tbody>
     </table>
+    <div class="panel-body">
+        <b>Ændringer:</b>
+        <ul id="summary"></ul>
+        <div class="btn btn-primary" id="btn-update" disabled>Tjek ændringer</div>
+        <div class="btn btn-success" id="btn-submit" disabled>Submit ændringer</div>
+    </div>
+    <script><?= substr($base,0,-1)."};" ?></script>
+    <script src="/static/team-admin.js"></script>
 <?php else: ?>
     <p style="padding: 20px">Ingen klandringer. <a href="/klandring/create">Så se at få oprettet nogle</a></p>
 <?php endif ?>
