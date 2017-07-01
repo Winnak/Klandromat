@@ -73,10 +73,10 @@ btnSubmit.addEventListener("click", function(ev) {
 
 btnUpdate.addEventListener("click", function(ev) {
     btnUpdate.setAttribute("disabled", "");
-    btnSubmit.removeAttribute("disabled");
 
     summary.innerHTML = "";
 
+    var changed = 0; // temp for checking we are actually making any changes.
     for (var id in changes) {
         var maintain = false;
         
@@ -85,6 +85,7 @@ btnUpdate.addEventListener("click", function(ev) {
             if (unchanged[id].verdict !== v) {
                 addToChangeList(id, getVerdictMsg(v));
                 maintain = true;
+                changed++;
             }
         }
 
@@ -93,11 +94,18 @@ btnUpdate.addEventListener("click", function(ev) {
             if (unchanged[id].paid !== p) {
                 addToChangeList(id, getPaidMsg(p));
                 maintain = true;
+                changed++;
             }
         }
         
         if (!maintain) {
             delete changes[id];
         }
+    }
+
+    if (changed > 0) {
+        btnSubmit.removeAttribute("disabled");        
+    } else {
+        btnSubmit.setAttribute("disabled", "");        
     }
 });

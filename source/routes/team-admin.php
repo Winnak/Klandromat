@@ -98,3 +98,5 @@ $base .= "$row[id]:{verdict:$row[verdict],verdictdate:\"$row[verdictdate]\",paid
     <p style="padding: 20px">Ingen klandringer. <a href="/klandring/create">Så se at få oprettet nogle</a></p>
 <?php endif ?>
 </div>
+<br>
+<br>
