@@ -1,7 +1,7 @@
 <?php 
 session_start();
 require_once("config.php");
-header('Content-type: text/html; charset=UTF-8');
+header("Content-type: text/html; charset=UTF-8");
 
 define("ROLE_USER", 1);
 define("ROLE_ADMIN", 2);
@@ -9,7 +9,7 @@ define("ROLE_ADMIN", 2);
 $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
 $db->set_charset("utf8");
 
-$paths = preg_split('/\//', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), -1, PREG_SPLIT_NO_EMPTY);
+$paths = preg_split("/\//", parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), -1, PREG_SPLIT_NO_EMPTY);
 
 function route_to($controller, 
     $arguments = array(),
