@@ -162,8 +162,9 @@ if (isset($_SESSION["oauth-success"])) { // logged in
         }
     }
 } else if(count($paths) !== 0) { 
+    header("Status: 403", true, 403);
     route_to("signup.php", 
-        ["auid" => $auid],
+        array(),
         ["title" => "Signup!"]);
 } else { // not logged in.
     route_to("login.php");
