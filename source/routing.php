@@ -14,9 +14,17 @@ function route_to($controller,
 if (!isset($_SESSION["oauth-success"])) {
     route_to("login.php");
 } else if ($_SESSION["oauth-success"] === 2) {
-    route_to("signup.php", 
-        array(),
-        ["title" => "Signup!"]);
+    if (count($paths)) {
+        if ($paths[0] === "logout") {
+            require_once("routes/logout.php");
+        } else {
+            header("Location: /");
+        }
+    } else {
+        route_to("signup.php",
+            array(),
+            ["title" => "Signup!"]);
+    }
 } else if ($_SESSION["oauth-success"] === 1) { // logged in
     if (count($paths) === 0) {
             route_to("upcoming.php", 

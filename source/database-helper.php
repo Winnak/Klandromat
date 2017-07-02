@@ -1,6 +1,7 @@
 <?php
-define("ROLE_USER", 1);
-define("ROLE_ADMIN", 2);
+define("ROLE_USER", 1); // Student is a member of the team.
+define("ROLE_ADMIN", 2); // Student is an admin on the team.
+define("ROLE_APPLICANT", 3); // Student has required access to the team.
 
  /**
   * Fetches the infos from a 1... users from the database. 

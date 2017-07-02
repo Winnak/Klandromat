@@ -36,18 +36,23 @@ if(isset($header_stuff["scripts"])) {
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-          <?php if (isset($_SESSION["oauth-success"])) : ?>
-            <li><a href="/">Oversigt</a></li>
-            <li><a href="/<?= $_SESSION["auid"] ?>">Din bruger</a></li>
-            <?php foreach ($_SESSION["teams"] as $team) : ?>
-            <li><a href="/<?= $team["slug"] ?>"><?= $team["name"] ?></a></li>
-            <?php endforeach ?>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/klandring/create">Opret klandring</a></li>
-            <li><a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Log ud.</a></li>
-          <?php endif; ?>
+<?php if (isset($_SESSION["oauth-success"]) && $_SESSION["oauth-success"] == 1) : ?>
+          <li><a href="/">Oversigt</a></li>
+          <li><a href="/<?= $_SESSION[" auid "] ?>">Din bruger</a></li>
+<?php foreach ($_SESSION["teams"] as $team) : ?>
+          <li><a href="/<?= $team[" slug "] ?>"><?= $team["name"] ?></a></li>
+<?php endforeach ?>
         </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/klandring/create">Opret klandring</a></li>
+          <li><a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Log ud.</a></li>
+        </ul>
+<?php elseif(isset($_SESSION["oauth-success"])): ?>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Log ud.</a></li>
+        </ul>
+<?php endif; ?>
       </div>
       <!--/.nav-collapse -->
     </div>

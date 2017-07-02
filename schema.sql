@@ -50,4 +50,5 @@ CREATE TABLE IF NOT EXISTS `klandring` (
 
 INSERT INTO `role` (`id`, `name`) VALUES 
 (1, 'member'),
-(2, 'admin');
+(2, 'admin'),
+(3, 'applicant');

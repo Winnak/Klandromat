@@ -50,9 +50,14 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
                 $_SESSION["student-name"]  = $row["name"];
                 $_SESSION["auid"]          = $_GET["username"];
                 $_SESSION["oauth-code"]    = $_GET["code"];
-                $_SESSION["oauth-success"] = $_GET["username"] === $row["auid"];
+                $_SESSION["oauth-success"] = 1;
                 $_SESSION["teams"]         = $teams;
-            } 
+            } else {
+                $_SESSION["auid"]          = $_GET["username"];
+                $_SESSION["oauth-code"]    = $_GET["code"];
+                $_SESSION["oauth-success"] = 2;
+                $_SESSION["teams"]         = [];
+            }
             $db->close();
             header("Location: /");
         }
