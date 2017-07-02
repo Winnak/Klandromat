@@ -73,14 +73,25 @@ btnSubmit.addEventListener("click", function(ev) {
     btnSubmit.setAttribute("disabled", "");
     summary.innerHTML = "";
 
+    for (var id in changes) {
+        if (!changes[id].hasOwnProperty("verdict")) {
+            changes[id].verdict = unchanged[id].verdict;
+        }
+
+        if (!changes[id].hasOwnProperty("paid")) {
+            changes[id].paid = unchanged[id].paid;
+        }
+    }
+
     let http = new XMLHttpRequest();
     http.open("POST", "/" + slug + "/admin");
     http.setRequestHeader("Content-Type", "application/json");
     http.onreadystatechange = function () {
-        if (http.readyState === 4) {
-            if (http.status === 200) {
-                // todo refresh.
+        if (http.readyState === 4) { // if we have recieved a response
+            if (http.status === 200) { // if the response is OK
+                location.reload(true);
             } else {
+                alert("Failed to update");
                 console.error("Unable to post ...");
             }
         }

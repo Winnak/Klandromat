@@ -1,5 +1,26 @@
 <?php
 if($_SERVER['REQUEST_METHOD'] === "POST") {
+    // just to be sure, we verify that they really are admins of the team.
+    if ($arguments["roleid"] != ROLE_ADMIN) {
+        header("Status: 300", true, 300);
+        die();
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $db->autocommit(FALSE); // ensure all changes go through.
+
+    foreach ($data as $id => $change) {
+        $db->query("UPDATE klandring
+                    SET verdict=$change[verdict], paid=$change[paid]
+                    WHERE id=$id");
+    }
+
+    if (!$db->commit()) {
+        echo "noooooooooooooope";
+        header("Status: 500", true, 500);
+    }
+    echo "all is well";
     die();
 }
 
@@ -30,18 +51,20 @@ if (count($klandringer)) {
 
 $base = "var unchanged={";
 
-function a_checkbox($id, $checked) {
+function a_checkbox($row, $users, $checked) {
+    $name = $users[$row["from"]]["name"];
     if ($checked) {
-        return "<input type=\"checkbox\" id=\"va-$id\" checked>";
+        return "<input type=\"checkbox\" id=\"va-$row[id]\" checked> $name";
     } else {
-        return "<input type=\"checkbox\" id=\"va-$id\">";
+        return "<input type=\"checkbox\" id=\"va-$row[id]\"> $name";
     }
 }
-function b_checkbox($id, $checked) {
+function b_checkbox($row, $users, $checked) {
+    $name = $users[$row["to"]]["name"];
     if ($checked) {
-        return "<input type=\"checkbox\" id=\"vb-$id\" checked>";
+        return "<input type=\"checkbox\" id=\"vb-$row[id]\" checked> $name";
     } else {
-        return "<input type=\"checkbox\" id=\"vb-$id\">";
+        return "<input type=\"checkbox\" id=\"vb-$row[id]\"> $name";
     }
 }
 ?>
@@ -66,20 +89,20 @@ function b_checkbox($id, $checked) {
 <?php switch($row["verdict"]): ?>
 <?php default: ?>
 <?php case 0: ?>
-                <td><i><?= $users[$row["from"]]["name"] ?></i><?= a_checkbox($row["id"], false) ?></td>
-                <td><i><?= $users[$row["to"]]["name"] ?></i><?= b_checkbox($row["id"], false) ?></td>
+                <td><?= a_checkbox($row, $users, false) ?></td>
+                <td><?= b_checkbox($row, $users, false) ?></td>
 <?php break; ?>
 <?php case 1: ?>
-                <td><div class="win"><?= $users[$row["from"]]["name"] ?></div><?= a_checkbox($row["id"], true) ?></td>
-                <td><div class="loss"><?= $users[$row["to"]]["name"] ?></div><?= b_checkbox($row["id"], false) ?></td>
+                <td><?= a_checkbox($row, $users, true) ?></td>
+                <td><?= b_checkbox($row, $users, false) ?></td>
 <?php break; ?>
 <?php case 2: ?>
-                <td><div class="loss"><?= $users[$row["from"]]["name"] ?></div><?= a_checkbox($row["id"], false) ?></td>
-                <td><div class="win"><?= $users[$row["to"]]["name"] ?></div><?= b_checkbox($row["id"], true) ?></td>
+                <td><?= a_checkbox($row, $users, false) ?></td>
+                <td><?= b_checkbox($row, $users, true) ?></td>
 <?php break; ?>
 <?php case 3: ?>
-                <td><div class="tie"><?= $users[$row["from"]]["name"] ?></div><?= a_checkbox($row["id"], true) ?></td>
-                <td><div class="tie"><?= $users[$row["to"]]["name"] ?></div><?= b_checkbox($row["id"], true) ?></td>
+                <td><?= a_checkbox($row, $users, true) ?></td>
+                <td><?= b_checkbox($row, $users, true) ?></td>
 <?php break; ?>
 <?php endswitch; ?>
                 <td><input type="checkbox" id="p-<?= $row["id"] ?>" <?= $row["paid"] ? "checked" : "" ?>></input></td>

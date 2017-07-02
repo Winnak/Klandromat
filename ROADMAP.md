@@ -10,13 +10,11 @@
 * Create a `database-setup.php` that sets up the database for first time developers.
 * Create page for editing klandringer.
 * Manage user roles
-* Create admin control board.
 * Create "upload media to klandring"
 * Create blog/news-style + calender board for team
 
 ## Frontend
 * Create a more fancy front page.
 * Create calender for upcoming SNAPS.
-* Create admin control board.
 * Fix edit klandring page's select user style.
 * Fix edit klandring page's description box width.
