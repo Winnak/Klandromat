@@ -17,7 +17,6 @@ if($_SERVER['REQUEST_METHOD'] === "POST") {
     }
 
     if (!$db->commit()) {
-        echo "noooooooooooooope";
         header("Status: 500", true, 500);
     }
     echo "all is well";
