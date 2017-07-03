@@ -4,6 +4,9 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 
+#ignore user uploaded files
+source/static/data/
+
 #personal database setup for development
 database/ 
 

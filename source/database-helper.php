@@ -1,7 +1,22 @@
 <?php
-define("ROLE_USER", 1); // Student is a member of the team.
-define("ROLE_ADMIN", 2); // Student is an admin on the team.
-define("ROLE_APPLICANT", 3); // Student has required access to the team.
+if (!defined("DATABASE_CONSTS")) {
+    define("DATABASE_CONSTS", true);
+    define("ROLE_USER", 1); // Student is a member of the team.
+    define("ROLE_ADMIN", 2); // Student is an admin on the team.
+    define("ROLE_APPLICANT", 3); // Student has required access to the team.
+    define("DATA_PATH", "/static/data/");
+    define("VALID_PATH_LETTERS", str_split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"));
+    define("VALID_PATH_LETTERS_LENGTH", count(VALID_PATH_LETTERS));
+}
+
+
+function get_random_filename($length) {
+    $path = "";
+    for ($i=0; $i < $length; $i++) { 
+        $path .= VALID_PATH_LETTERS[rand(0, VALID_PATH_LETTERS_LENGTH - 1)];
+    }
+    return $path;
+}
 
  /**
   * Fetches the infos from a 1... users from the database. 

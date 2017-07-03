@@ -48,6 +48,18 @@ CREATE TABLE IF NOT EXISTS `klandring` (
   FOREIGN KEY (`to`) REFERENCES student(id)
 );
 
+CREATE TABLE IF NOT EXISTS `klandringmeta` (
+  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `klandringid` INT NOT NULL,
+  `uploadedby` INT(11) NOT NULL,
+  `uploaddate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `mime` VARCHAR(100) NOT NULL,
+  `oldname` VARCHAR(260) NOT NULL,
+  `newpath` CHAR(60) NOT NULL, -- 63^60 possibilities should be enough.
+  FOREIGN KEY (`klandringid`) REFERENCES klandring(id),
+  FOREIGN KEY (`uploadedby`) REFERENCES student(id)
+);
+
 INSERT INTO `role` (`id`, `name`) VALUES 
 (1, 'member'),
 (2, 'admin'),
