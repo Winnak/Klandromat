@@ -103,14 +103,20 @@ if (!isset($_SESSION["oauth-success"])) {
             foreach ($_SESSION["teams"] as $team) {
                 if ($team["slug"] == $paths[0]) {
                     $found = true;
-                    if ((count($paths) === 2) && ($paths[1] === "admin") && ($team["roleid"] == ROLE_ADMIN)) {
-                        route_to("team-admin.php", 
-                            $team, 
-                            ["title" => $team["name"] . " admin"]);
-                    } else if (count($paths) === 1) {
-                        route_to("team-index.php", 
-                            $team, 
+                    if (($team["roleid"] != ROLE_ADMIN) || (count($paths) === 1)) {
+                        route_to("team-index.php",
+                            $team,
                             ["title" => $team["name"]]);
+                    } else if (count($paths) === 2) {
+                        if ($paths[1] === "admin") {
+                            route_to("team-admin.php",
+                                $team,
+                                ["title" => $team["name"] . " admin"]);
+                        } else if ($paths[1] === "admin-klandring") {
+                            route_to("team-admin-klandring.php",
+                                $team,
+                                ["title" => $team["name"] . " admin"]);
+                        }
                     } else {
                         header("Location: /$team[slug]"); // sanitize url in case it was gibberish.
                     }

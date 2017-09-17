@@ -60,4 +60,17 @@ function get_user_infos_arr($ids) {
     }
     return $rows;
 }
+
+function get_students_of_team($team_id) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_students_of_team.");
+
+    $sql = "SELECT A.* FROM student A
+        INNER JOIN teamstudent B ON A.id = B.studentid
+        WHERE B.teamid = $team_id";
+
+    $result = $db->query($sql);
+
+    return $result;
+}
 ?>
