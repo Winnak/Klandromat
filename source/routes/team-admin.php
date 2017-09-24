@@ -68,7 +68,14 @@ function b_checkbox($row, $users, $checked) {
 }
 ?>
 <div class="panel panel-default">
-    <div class="panel-heading">Håndtering af <?= $arguments["name"] ?></div>
+    <div class="panel-heading clearfix">
+        <div class="pull-left panel-title" style="padding-top:7.5px;">Håndtering af <?= $arguments["name"] ?></div>
+        <div class="btn-group pull-right">
+        <?php if($arguments["roleid"] == ROLE_ADMIN) {
+            echo "<a href=\"admin-klandring\" class=\"btn btn-default\" style=\"\"><i class=\"glyphicon glyphicon-pencil\"> </i> Tilføj klandring</a>";
+        }?>
+        </div>
+    </div>
 <?php if(count($klandringer) > 0) : ?>
     <table class='table table-hover'>
         <thead>
