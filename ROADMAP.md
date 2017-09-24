@@ -11,7 +11,8 @@
 * Create page for editing klandringer.
 * Manage user roles
 * Create "upload media to klandring"
-* Create blog/news-style + calender board for team
+* Switch welcome page to use mark down instead
+* Create blog/news-style welcome page for the team.
 
 ## Frontend
 * Create a more fancy front page.

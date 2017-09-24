@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `team` (
   `name` varchar(35) NOT NULL,
   `slug` varchar(35) NOT NULL,
   `creationdate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `welcome` TEXT NULL DEFAULT NULL,
   `value` INT(11) NOT NULL DEFAULT 5 -- Klandring price.
 );
 

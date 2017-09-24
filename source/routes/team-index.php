@@ -1,3 +1,16 @@
+<?php if($arguments["welcome"] != null) : ?>
+<div class="panel panel-default">
+    <div class="panel-heading clearfix">
+        <div class="pull-left panel-title" style="padding-top:7.5px;">Velkommen til <?= $arguments["name"] ?></div>
+        <div class="btn-group pull-right">
+        <?php // TODO: Editor for editing the welcome text ?>
+        </div>
+    </div>
+    <div class="panel-body">
+        <?= $arguments["welcome"]; ?>
+    </div>
+</div>
+<?php endif ?>
 <?php
 $sql = "SELECT * FROM `klandring` WHERE ((team = $arguments[id]) AND (verdict != 0))";
 $result = $db->query($sql);
