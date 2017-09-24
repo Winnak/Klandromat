@@ -82,6 +82,7 @@ function b_checkbox($row, $users, $checked) {
             <tr>
                 <th>ID</th>
                 <th>Dato</th>
+                <th>Title</th>
                 <th>Klandrer</th>
                 <th>Klandret</th>
                 <th>Betalt</th>
@@ -90,8 +91,9 @@ function b_checkbox($row, $users, $checked) {
         <tbody id="klandringer">
 <?php foreach ($klandringer as $row) : ?>
             <tr id="r-<?= $row["id"] ?>">
-                <td><?= $row["id"]?></td>
+                <td><a href="/klandring/<?= $row["id"]?>"><?= $row["id"]?></a></td>
                 <td><div id="d-<?= $row["id"] /* TODO: edit options */?>"><?= $row["verdictdate"] ?></div></td>
+                <td><?= $row["title"] ?></td>
 <?php switch($row["verdict"]): ?>
 <?php default: ?>
 <?php case 0: ?>
