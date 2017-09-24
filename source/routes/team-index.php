@@ -31,7 +31,7 @@ $debt = 0;
     <div class="panel-heading clearfix">
         <div class="pull-left panel-title" style="padding-top:7.5px;">Klandringshistorik for <?= $arguments["name"] ?></div>
         <div class="btn-group pull-right">
-        <?php if($arguments["roleid"] == ROLE_ADMIN) {
+        <?php if($arguments["roleid"] == ROLE_TREASURER) {
             echo "<a href=\"$arguments[slug]/admin\" class=\"btn btn-default\" style=\"\"><i class=\"glyphicon glyphicon-pencil\"> </i> Administrerer</a>";
         }?>
         </div>

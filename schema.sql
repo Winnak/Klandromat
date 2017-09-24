@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `klandringmeta` (
 );
 
 INSERT INTO `role` (`id`, `name`) VALUES 
+(0, 'applicant')
 (1, 'member'),
-(2, 'admin'),
-(3, 'applicant');
+(2, 'treasurer'),
+(3, 'team-admin');

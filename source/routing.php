@@ -103,7 +103,7 @@ if (!isset($_SESSION["oauth-success"])) {
             foreach ($_SESSION["teams"] as $team) {
                 if ($team["slug"] == $paths[0]) {
                     $found = true;
-                    if (($team["roleid"] != ROLE_ADMIN) || (count($paths) === 1)) {
+                    if (($team["roleid"] != ROLE_TREASURER) || (count($paths) === 1)) {
                         route_to("team-index.php",
                             $team,
                             ["title" => $team["name"]]);

@@ -3,9 +3,10 @@ $VALID_LETTERS = array();
 
 if (!defined("DATABASE_CONSTS")) {
     define("DATABASE_CONSTS", true);
+    define("ROLE_APPLICANT", 0); // Student has required access to the team.
     define("ROLE_USER", 1); // Student is a member of the team.
-    define("ROLE_ADMIN", 2); // Student is an admin on the team.
-    define("ROLE_APPLICANT", 3); // Student has required access to the team.
+    define("ROLE_TREASURER", 2); // Student is an admin on the team.
+    define("ROLE_TEAMADMIN", 3); // Student has required access to the team.
     define("DATA_PATH", "/static/data/");
     $VALID_LETTERS = str_split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
     define("VALID_PATH_LETTERS_LENGTH", count($VALID_LETTERS));

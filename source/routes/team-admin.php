@@ -1,7 +1,7 @@
 <?php
 if($_SERVER['REQUEST_METHOD'] === "POST") {
     // just to be sure, we verify that they really are admins of the team.
-    if ($arguments["roleid"] != ROLE_ADMIN) {
+    if ($arguments["roleid"] != ROLE_TREASURER) {
         header("Status: 300", true, 300);
         die();
     }
@@ -71,7 +71,7 @@ function b_checkbox($row, $users, $checked) {
     <div class="panel-heading clearfix">
         <div class="pull-left panel-title" style="padding-top:7.5px;">Håndtering af <?= $arguments["name"] ?></div>
         <div class="btn-group pull-right">
-        <?php if($arguments["roleid"] == ROLE_ADMIN) {
+        <?php if($arguments["roleid"] == ROLE_TREASURER) {
             echo "<a href=\"admin-klandring\" class=\"btn btn-default\" style=\"\"><i class=\"glyphicon glyphicon-pencil\"> </i> Tilføj klandring</a>";
         }?>
         </div>
