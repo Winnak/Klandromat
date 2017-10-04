@@ -68,8 +68,8 @@ INSERT INTO `role` (`id`, `name`) VALUES
 (3, 'team-admin');
 
 CREATE TABLE IF NOT EXISTS `studentElo` (
-	`id`	INT PRIMARY KEY,
-    `elo`	FLOAT NOT NULL DEFAULT 2000
+  `id`	INT PRIMARY KEY,
+  `elo`	FLOAT NOT NULL DEFAULT 2000
 );
 ALTER TABLE studentElo
 ADD INDEX myIndex (id, elo);
@@ -132,5 +132,3 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
-
-UPDATE klandring SET `id` = id;
