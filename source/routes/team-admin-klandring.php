@@ -13,8 +13,8 @@ if ($to < 0 || $from < 0
 	die();
 }
 
-$sql = "INSERT INTO klandring (`title`, `description`, `from`, `to`, `team`) 
-		VALUES ('$title', '$desc', $from, $to, $arguments[id]);";
+$sql = "INSERT INTO klandring (`title`, `description`, `from`, `to`, `team`, `verdictdate`)
+		VALUES ('$title', '$desc', $from, $to, $arguments[id], CURDATE());";
 
 $result = $db->query($sql);
 if ($result) {
@@ -64,28 +64,6 @@ while ($row = $students->fetch_assoc()) {
 	</div>
 </form>
 <script>
-
-<?php
-// $manifest = "var teams = {";
-// foreach ($_SESSION["teams"] as $team) {
-// 	$sql = "SELECT DISTINCT A.* FROM student A
-// 		INNER JOIN teamstudent B ON A.id = B.studentid
-// 		WHERE B.teamid = $team[id]";
-
-// 	$result = $db->query($sql);
-
-// 	$manifest .= "$team[id]: \"";
-// 	while ($row = $result->fetch_assoc()) {
-// 		$manifest .= "<option value='$row[id]'>$row[name]</option>";
-// 	}
-// 	$manifest .= "\",";
-
-// 	$result->free();
-// }
-// $manifest = substr($manifest, 0, -1);
-// $manifest .= "};\n";
-// echo $manifest;
-?>
 window.onload = function(e) {
 	var klandrer = document.getElementById("select-klandrer");
 	var klandret = document.getElementById("select-klandret");
