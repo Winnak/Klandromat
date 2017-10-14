@@ -8,9 +8,8 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
     $redirect = (isset($_SERVER["HTTPS"]) ? "https" : "http")."://$_SERVER[HTTP_HOST]";
 
     if (isset($_GET["from"])) {
-         // FIXME: why do we get the 'from' query param twice
-        $length = (strlen($_GET["from"]) - 6) / 2;
-        $redirect .= substr($_GET["from"], 0, $length);
+        // FIXME: why do we get the 'from' query param twice when debugging?
+        $redirect .= $_GET["from"];
     }
 
     $query_params = http_build_query(
