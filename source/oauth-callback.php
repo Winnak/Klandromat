@@ -5,11 +5,19 @@ require("config.php");
 
 if (isset($_GET["code"]) && isset($_GET["username"])) {
 
+    $redirect = (isset($_SERVER["HTTPS"]) ? "https" : "http")."://$_SERVER[HTTP_HOST]";
+
+    if (isset($_GET["from"])) {
+         // FIXME: why do we get the 'from' query param twice
+        $length = (strlen($_GET["from"]) - 6) / 2;
+        $redirect .= substr($_GET["from"], 0, $length);
+    }
+
     $query_params = http_build_query(
         array(
             "client_id"     => OAUTH_CLIENT_ID,
             // "client_secret" => OAUTH_CLEINT_SECRET,
-            "redirect_uri"  => (isset($_SERVER["HTTPS"]) ? "https" : "http")."://$_SERVER[HTTP_HOST]/$_GET[username]/",
+            "redirect_uri"  => $redirect,
             "grant_type"    => "authorization_code",
             "username"      => $_GET["username"],
             "code"          => $_GET["code"]
@@ -59,7 +67,7 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
                 $_SESSION["teams"]         = [];
             }
             $db->close();
-            header("Location: /");
+            header("Location: $redirect");
         }
     }
 }
