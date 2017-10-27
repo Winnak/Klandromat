@@ -116,6 +116,41 @@ if (!isset($_SESSION["oauth-success"])) {
                             route_to("team-admin-klandring.php",
                                 $team,
                                 ["title" => $team["name"] . " admin"]);
+                        } else if ($paths[1] === "admin-snaps") {
+                            $sql = "SELECT id FROM klandring
+                                    WHERE verdict = 0 AND team=$team[id]
+                                    ORDER BY creationdate
+                                    LIMIT 1";
+                            $result = $db->query($sql);
+                            $row = $result->fetch_array(MYSQLI_ASSOC);
+                            $result->free();
+
+                            if ($row) {
+                                header("Location: admin-snaps/$row[id]");
+                            } else {
+                                header("Location: admin-klandring");
+                            }
+                        }
+                    } else if (count($paths) === 3) {
+                        if ($paths[1] === "admin-snaps") {
+                            $klandid = $paths[2];
+                            if (is_numeric($klandid)) {
+                                $sql = "SELECT * FROM klandring
+                                        WHERE id = $klandid AND team=$team[id]
+                                        LIMIT 1";
+                                $result = $db->query($sql);
+                                $row = $result->fetch_array(MYSQLI_ASSOC);
+                                $result->free();
+
+                                if ($row) {
+                                    route_to("klandring-show.php",
+                                    $row,
+                                    // ["team" => $team, "klandring" => $row],
+                                    ["title" => $team["name"] . " admin"]);
+                                } else {
+                                    header("Location: admin");
+                                }
+                            }
                         }
                     } else {
                         header("Location: /$team[slug]"); // sanitize url in case it was gibberish.

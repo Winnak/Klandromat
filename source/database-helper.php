@@ -3,10 +3,20 @@ $VALID_LETTERS = array();
 
 if (!defined("DATABASE_CONSTS")) {
     define("DATABASE_CONSTS", true);
+
+    // roles
     define("ROLE_APPLICANT", 0); // Student has required access to the team.
     define("ROLE_USER", 1);      // Student is a member of the team.
     define("ROLE_TREASURER", 2); // Student is a treasurer on the team.
     define("ROLE_TEAMADMIN", 3); // Student is an admin on the team.
+
+    // klandring
+    define("WINNER_NONE", 0); // Klandring undetermained.
+    define("WINNER_KLANDRER", 1); // Klandring was won by klandrer.
+    define("WINNER_KLANDRET", 2); // Klandring was won by klandret.
+    define("WINNER_BOTH", WINNER_KLANDRER | WINNER_KLANDRET); // Klandring was a draw.
+
+    // meta
     define("DATA_PATH", "/static/data/");
     $VALID_LETTERS = str_split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
     define("VALID_PATH_LETTERS_LENGTH", count($VALID_LETTERS));
@@ -73,5 +83,14 @@ function get_students_of_team($team_id) {
     $result = $db->query($sql);
 
     return $result;
+}
+
+function get_current_user_role($team_id) {
+    foreach ($_SESSION["teams"] as $key => $value) {
+        if ($value["id"] === $team_id) {
+            return $value["roleid"];
+        }
+    }
+    return ROLE_APPLICANT;
 }
 ?>

@@ -48,32 +48,20 @@ if (count($klandringer)) {
     $users = array_combine($ids, get_user_infos_arr($ids));
 }
 
-$base = "var unchanged={";
+function get_checkbox($klandring_row, $prefix, $winner) {
+    return "<input type=\"checkbox\" id=\"" . $prefix . "-$klandring_row[id]\" " . (($klandring_row["verdict"] & $winner) == $winner ? "checked>" : ">");
+}
 
-function a_checkbox($row, $users, $checked) {
-    $name = $users[$row["from"]]["name"];
-    if ($checked) {
-        return "<input type=\"checkbox\" id=\"va-$row[id]\" checked> $name";
-    } else {
-        return "<input type=\"checkbox\" id=\"va-$row[id]\"> $name";
-    }
-}
-function b_checkbox($row, $users, $checked) {
-    $name = $users[$row["to"]]["name"];
-    if ($checked) {
-        return "<input type=\"checkbox\" id=\"vb-$row[id]\" checked> $name";
-    } else {
-        return "<input type=\"checkbox\" id=\"vb-$row[id]\"> $name";
-    }
-}
+$base = "var unchanged={";
 ?>
 <div class="panel panel-default">
     <div class="panel-heading clearfix">
         <div class="pull-left panel-title" style="padding-top:7.5px;">Håndtering af <?= $arguments["name"] ?></div>
         <div class="btn-group pull-right">
-        <?php if($arguments["roleid"] == ROLE_TREASURER) {
-            echo "<a href=\"admin-klandring\" class=\"btn btn-default\" style=\"\"><i class=\"glyphicon glyphicon-pencil\"> </i> Tilføj klandring</a>";
-        }?>
+        <?php if($arguments["roleid"] == ROLE_TREASURER): ?>
+            <a href="admin-klandring" class="btn btn-default"><i class="glyphicon glyphicon-pencil"> </i> Tilføj klandring</a>
+            <a href="admin-snaps" class="btn btn-primary"><i class="glyphicon glyphicon-check"> </i> Afgør SNAPS</a>
+        <?php endif; ?>
         </div>
     </div>
 <?php if(count($klandringer) > 0) : ?>
@@ -94,25 +82,8 @@ function b_checkbox($row, $users, $checked) {
                 <td><a href="/klandring/<?= $row["id"]?>"><?= $row["id"]?></a></td>
                 <td><div id="d-<?= $row["id"] /* TODO: edit options */?>"><?= $row["verdictdate"] ?></div></td>
                 <td><?= $row["title"] ?></td>
-<?php switch($row["verdict"]): ?>
-<?php default: ?>
-<?php case 0: ?>
-                <td><?= a_checkbox($row, $users, false) ?></td>
-                <td><?= b_checkbox($row, $users, false) ?></td>
-<?php break; ?>
-<?php case 1: ?>
-                <td><?= a_checkbox($row, $users, true) ?></td>
-                <td><?= b_checkbox($row, $users, false) ?></td>
-<?php break; ?>
-<?php case 2: ?>
-                <td><?= a_checkbox($row, $users, false) ?></td>
-                <td><?= b_checkbox($row, $users, true) ?></td>
-<?php break; ?>
-<?php case 3: ?>
-                <td><?= a_checkbox($row, $users, true) ?></td>
-                <td><?= b_checkbox($row, $users, true) ?></td>
-<?php break; ?>
-<?php endswitch; ?>
+                <td><?= get_checkbox($row, "va", WINNER_KLANDRER) . " " . $users[$row["from"]]["name"] ?></td>
+                <td><?= get_checkbox($row, "vb", WINNER_KLANDRET) . " " . $users[$row["to"]]["name"] ?></td>
                 <td><input type="checkbox" id="p-<?= $row["id"] ?>" <?= $row["paid"] ? "checked" : "" ?>></input></td>
             </tr>
 <?php

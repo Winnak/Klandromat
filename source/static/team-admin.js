@@ -9,13 +9,13 @@ var changes = {};
 function getVerdictMsg(verdict) {
     switch (verdict) {
         case 0:
-            return "ikke beslutet"
+            return "ikke beslutet";
         case 1:
-            return "Klandrer vandt"
+            return "Klandrer vandt";
         case 2:
-            return "Klandret vandt"
+            return "Klandret vandt";
         case 3:
-            return "uafgjort"
+            return "uafgjort";
         default:
             console.error("Did not get a proper verdict (" + verdict + ") for " + text);
             return "!!!! DER SKETE EN FEJL ABORT !!!";
@@ -83,7 +83,7 @@ btnSubmit.addEventListener("click", function(ev) {
         }
     }
 
-    let http = new XMLHttpRequest();
+    var http = new XMLHttpRequest();
     http.open("POST", "/" + slug + "/admin");
     http.setRequestHeader("Content-Type", "application/json");
     http.onreadystatechange = function () {
