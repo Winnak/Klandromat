@@ -1,7 +1,11 @@
 <?php
+$team = get_team_from_slug($resources["team"]);
+$user_role = get_current_user_role($team["id"]);
+?>
+<?php
 if($_SERVER['REQUEST_METHOD'] === "POST") {
     // just to be sure, we verify that they really are admins of the team.
-    if ($arguments["roleid"] != ROLE_TREASURER) {
+    if ($user_role != ROLE_TREASURER) {
         header("Status: 300", true, 300);
         die();
     }
@@ -23,7 +27,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST") {
     die();
 }
 
-$sql = "SELECT * FROM `klandring` WHERE team = $arguments[id]";
+$sql = "SELECT * FROM `klandring` WHERE team = $team[id]";
 $result = $db->query($sql);
 
 $klandringer = [];
@@ -56,11 +60,24 @@ $base = "var unchanged={";
 ?>
 <div class="panel panel-default">
     <div class="panel-heading clearfix">
-        <div class="pull-left panel-title" style="padding-top:7.5px;">Håndtering af <?= $arguments["name"] ?></div>
+        <div class="pull-left panel-title" style="padding-top:7.5px;">Håndtering af <?= $team["name"] ?></div>
         <div class="btn-group pull-right">
-        <?php if($arguments["roleid"] == ROLE_TREASURER): ?>
+        <?php if($user_role == ROLE_TREASURER): ?>
             <a href="admin-klandring" class="btn btn-default"><i class="glyphicon glyphicon-pencil"> </i> Tilføj klandring</a>
-            <a href="admin-snaps" class="btn btn-primary"><i class="glyphicon glyphicon-check"> </i> Afgør SNAPS</a>
+            <?php
+                $sql = "SELECT id FROM klandring
+                WHERE verdict = 0 AND team=$team[id]
+                ORDER BY creationdate
+                LIMIT 1";
+                
+                $result = $db->query($sql);
+                $row = $result->fetch_array(MYSQLI_ASSOC);
+                $result->free();
+
+                if ($row) {
+                    echo "<a href=\"klandring/$row[id]\"class=\"btn btn-primary\"><i class=\"glyphicon glyphicon-check\"> </i> Afgør SNAPS</a>";
+                }
+            ?>
         <?php endif; ?>
         </div>
     </div>
@@ -101,7 +118,7 @@ $base .= "$row[id]:{verdict:$row[verdict],verdictdate:\"$row[verdictdate]\",paid
     <script>
 <?php 
 echo substr($base,0,-1)."};\n";
-echo "var slug=\"$arguments[slug]\";"; 
+echo "var slug=\"$team[slug]\";"; 
 ?>
 
     </script>

@@ -1,3 +1,4 @@
+<?php $team = get_team_from_slug($resources["team"]); ?>
 <?php if($_SERVER['REQUEST_METHOD'] === "POST") : ?>
 <?php
 $title = $db->real_escape_string($_POST["title"]);
@@ -9,33 +10,33 @@ if ($to < 0 || $from < 0
 	|| !is_numeric($_POST["toid"])
 	|| !is_numeric($_POST["fromid"]))
 {
-	header("Location: /$arguments[slug]/admin-klandring");
+	header("Location: /$team[slug]/admin-klandring");
 	die();
 }
 
 $sql = "INSERT INTO klandring (`title`, `description`, `from`, `to`, `team`, `verdictdate`)
-		VALUES ('$title', '$desc', $from, $to, $arguments[id], CURDATE());";
+		VALUES ('$title', '$desc', $from, $to, $team[id], CURDATE());";
 
 $result = $db->query($sql);
 if ($result) {
-	header("Location: /$arguments[slug]/admin");
+	header("Location: /$team[slug]/admin");
 }
 else {
-	header("Location: /$arguments[slug]/admin-klandring");
+	header("Location: /$team[slug]/admin-klandring");
 }
 ?>
 <?php else: /* GET */ ?>
 <?php
-$students = get_students_of_team($arguments["id"]);
+$students = get_students_of_team($team["id"]);
 $options = "";
 while ($row = $students->fetch_assoc()) {
 	$options .= "<option value='$row[id]'>$row[name]</option>";
 }
 ?>
-<form class="col col-md-4" action="/<?= $arguments["slug"] ?>/admin-klandring" id="edit-user" method="POST">
+<form class="col col-md-4" action="/<?= $team["slug"] ?>/admin-klandring" id="edit-user" method="POST">
 	<div class="form-group">
 		<label for="select-team">På holdet:</label>
-		<?= $arguments["name"]; ?>
+		<?= $team["name"]; ?>
 	</div>
 	<div class="form-group">
 		<label for="select-klandret">Klandrer</label>

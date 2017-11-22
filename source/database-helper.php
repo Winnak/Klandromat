@@ -32,6 +32,71 @@ function get_random_filename($length) {
 }
 
  /**
+  * Fetches the user info from the database 
+  *
+  * @var string $auid corresponding to the user's auid in the database.
+  *
+  * @return mixed the row in the database, if it exists.
+  */
+function get_user_from_auid($auid) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_user_from_auid.");
+    assert(substr($auid, 0, 2) === "au", "get_user_info_auid needs to be a auid");
+
+    $auid = $db->real_escape_string($auid);
+    $sql = "SELECT * FROM student WHERE `auid` = '$auid' LIMIT 1";
+    $result = $db->query($sql);
+    $row = $result->fetch_array(MYSQLI_ASSOC);
+    $result->free();
+
+    return $row;
+}
+
+ /**
+  * Fetches a klandring from the database.
+  *
+  * @var int $id corresponding to the klandring's id in the database.
+  *
+  * @throws InvalidArgumentException if the input was not strictly integers.
+  *
+  * @return mixed the row in the database, if it exists.
+  */
+function get_klandring_from_id($id) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_klandring_from_id.");
+
+    if (!is_numeric($id)) {
+        throw new InvalidArgumentException("get_user_infos function only accepts integers. Input was: $id (".gettype($id).")");
+    }
+    $sql = "SELECT * FROM klandring WHERE id = $id LIMIT 1";
+    $result = $db->query($sql);
+    $row = $result->fetch_array(MYSQLI_ASSOC);
+    $result->free();
+
+    return $row;
+}
+
+ /**
+  * Fetches a team from the database.
+  *
+  * @var string $slug corresponding to the team's slug in the database.
+  *
+  * @return mixed the row in the database, if it exists.
+  */
+function get_team_from_slug($slug) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_team_from_slug.");
+
+    $slug = $db->real_escape_string($slug);
+    $sql = "SELECT * FROM team WHERE `slug` = '$slug' LIMIT 1";
+    $result = $db->query($sql);
+    $row = $result->fetch_array(MYSQLI_ASSOC);
+    $result->free();
+
+    return $row;
+}
+
+ /**
   * Fetches the infos from a 1... users from the database. 
   *
   * @var int $ids,... ids corresponding to the user id in the database.
@@ -44,6 +109,7 @@ function get_random_filename($length) {
 function get_user_infos(... $ids) {
     return get_user_infos_arr($ids);
 }
+
 /**
  * @see get_user_infos
  */
@@ -56,7 +122,7 @@ function get_user_infos_arr($ids) {
     for ($i=0; $i < count($ids); $i++) { 
         $id = $ids[$i];
         if (!is_int($id) || ($id < 0)) {
-            throw new InvalidArgumentException("get_user_infos function only accepts integers. Input was: ".$id." (".gettype($id).")");
+            throw new InvalidArgumentException("get_user_infos function only accepts integers. Input was: $id (".gettype($id).")");
         }
         $manifest .= $id.",";
     }

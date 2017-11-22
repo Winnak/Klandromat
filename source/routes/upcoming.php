@@ -6,6 +6,7 @@
 <div class="panel panel-default">
     <div class="panel-heading"><?= $team["name"] ?></div>
 <?php
+global $db;
 
 $your_klandringer = [];
 $their_klandringer = [];

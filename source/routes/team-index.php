@@ -1,18 +1,19 @@
-<?php if($arguments["welcome"] != null) : ?>
+<?php $team = get_team_from_slug($resources["team"])  ?>
+<?php if($team["welcome"] != null) : ?>
 <div class="panel panel-default">
     <div class="panel-heading clearfix">
-        <div class="pull-left panel-title" style="padding-top:7.5px;">Velkommen til <?= $arguments["name"] ?></div>
+        <div class="pull-left panel-title" style="padding-top:7.5px;">Velkommen til <?= $team["name"] ?></div>
         <div class="btn-group pull-right">
         <?php // TODO: Editor for editing the welcome text ?>
         </div>
     </div>
     <div class="panel-body">
-        <?= $arguments["welcome"]; ?>
+        <?= $team["welcome"]; ?>
     </div>
 </div>
 <?php endif ?>
 <?php
-$sql = "SELECT * FROM `klandring` WHERE ((team = $arguments[id]) AND (verdict != 0))";
+$sql = "SELECT * FROM `klandring` WHERE ((team = $team[id]) AND (verdict != 0))";
 $result = $db->query($sql);
 
 $klandringer = [];
@@ -42,10 +43,10 @@ $debt = 0;
 ?>
 <div class="panel panel-default">
     <div class="panel-heading clearfix">
-        <div class="pull-left panel-title" style="padding-top:7.5px;">Klandringshistorik for <?= $arguments["name"] ?></div>
+        <div class="pull-left panel-title" style="padding-top:7.5px;">Klandringshistorik for <?= $team["name"] ?></div>
         <div class="btn-group pull-right">
-        <?php if($arguments["roleid"] == ROLE_TREASURER) {
-            echo "<a href=\"$arguments[slug]/admin\" class=\"btn btn-default\" style=\"\"><i class=\"glyphicon glyphicon-pencil\"> </i> Administrerer</a>";
+        <?php if(get_current_user_role($team["id"]) == ROLE_TREASURER) {
+            echo "<a href=\"$team[slug]/admin\" class=\"btn btn-default\" style=\"\"><i class=\"glyphicon glyphicon-pencil\"> </i> Administrerer</a>";
         }?>
         </div>
     </div>

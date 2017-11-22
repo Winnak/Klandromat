@@ -1,169 +1,112 @@
 <?php
-$paths = preg_split("/\//", parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), -1, PREG_SPLIT_NO_EMPTY);
+define("NONE",                 0     );
+define("NO_TEMPLATE",          1 << 0);
+define("NO_AUTH_REQ",          1 << 1); // I.e. required that the user has not been authenticated.
+define("AUTH_REQ",             1 << 2); // I.e. user is authenticated, and on a team.
+define("IS_ROLE_TREASURER",    1 << 3);
+define("IS_ROLE_TEAMADMIN",    1 << 4);
+define("IS_ROLE_SUPER_ADMIN",  1 << 5);
 
-function route_to($controller, 
-    $arguments = array(),
-    $header_stuff = array("title" => "Klandromat"),
-    $footer_stuff = array()) {
+function resolve_routes() {
+    $controller = "routes/404.php";
+    $resources = array();
+    
+    foreach ([
+
+        // Home pages
+        ["url" => "/^\s*$/",                                         "view" => "routes/upcoming.php",             "flags" => AUTH_REQ], // home page (logged in)
+        ["url" => "/logout$/",                                       "view" => "routes/logout.php",               "flags" => NONE],     // logout
+
+        // Klandring pages
+        ["url" => "/klandring\/create$/",                            "view" => "routes/klandring-create.php",     "flags" => AUTH_REQ], // create klanring
+        ["url" => "/klandring\/(?P<kid>[0-9]+)$/",                   "view" => "routes/klandring-show.php",       "flags" => AUTH_REQ], // create klanring
+
+        // User pages
+        ["url" => "/(?P<user>au[0-9]+)$/",                           "view" => "routes/user-index.php",           "flags" => AUTH_REQ], // user page
+        ["url" => "/(?P<user>au[0-9]+)\/edit$/",                     "view" => "routes/user-edit.php",            "flags" => AUTH_REQ], // edit user page
+        
+        // Team pages
+        ["url" => "/^(?P<team>[a-z0-9\-]{1,35})$/",                  "view" => "routes/team-index.php",           "flags" => AUTH_REQ], // team page
+        ["url" => "/^(?P<team>[a-z0-9\-]{1,35})\/admin$/",           "view" => "routes/team-admin.php",           "flags" => AUTH_REQ | IS_ROLE_TREASURER], // admin page
+        ["url" => "/^(?P<team>[a-z0-9\-]{1,35})\/admin-klandring$/", "view" => "routes/team-admin-klandring.php", "flags" => AUTH_REQ | IS_ROLE_TREASURER], // admin klandring page
+
+        // Fallback
+        ["url" => "/.*/",                                            "view" => "routes/404.php",                  "flags" => AUTH_REQ], // otherwise case.
+        ["url" => "/^.*$/",                                          "view" => "routes/login.php",                "flags" => NONE],     // otherwise case.
+
+        ] as $route) {
+
+        $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+        if ($path[0] == '/') {
+            $path = substr($path, 1);
+        }
+
+        $matches = array(2);
+        if (preg_match($route["url"], $path, $matches) === 0) {
+            continue;
+        }
+
+        if (!validate_flags($route, $matches)) {
+            continue;
+        }
+
+        $resources = $matches;
+        if (($route["flags"] & NO_TEMPLATE) == NO_TEMPLATE) {
+            require_once($path["url"]);
+            return;
+        }
+
+        $controller = $route["view"];
+        break;
+    }
+
     global $db;
     require_once("template/header.php");
-    require_once("routes/" . $controller);
+    require_once($controller);
     require_once("template/footer.php");
 }
 
-if (!isset($_SESSION["oauth-success"])) {
-    route_to("login.php");
-} else if ($_SESSION["oauth-success"] === 2) {
-    if (count($paths)) {
-        if ($paths[0] === "logout") {
-            require_once("routes/logout.php");
-        } else {
-            header("Location: /");
+function validate_flags($route, $matches) {
+    $valid = true;
+    $flags = $route["flags"];
+    if ($flags & NO_AUTH_REQ) {
+        if (isset($_SESSION["oauth-success"])) {
+            $valid &= ($_SESSION["oauth-success"] == 0);
         }
-    } else {
-        route_to("signup.php",
-            array(),
-            ["title" => "Signup!"]);
-    }
-} else if ($_SESSION["oauth-success"] === 1) { // logged in
-    if (count($paths) === 0) {
-            route_to("upcoming.php", 
-                array(), 
-                ["title" => "Upkommende klandringer"]);
-    } else {
-        if ($paths[0] === "logout") {
-            require_once("routes/logout.php");
-        } else if (substr($paths[0], 0, 2) === "au") {
-            $auid = $db->real_escape_string($paths[0]);
-            $sql = "SELECT * FROM student WHERE auid = '$auid' LIMIT 1";
-            $result = $db->query($sql);
-            $row = $result->fetch_array(MYSQLI_ASSOC);
-            $result->free();
-
-            if($row) { // A person that is in the database.
-                if((count($paths) === 2) && ($paths[1] === "edit")) {
-                    if ($_SESSION["auid"] === $row["auid"]) {
-                        route_to("user-edit.php", 
-                            $row, 
-                            ["title" => $row["name"],
-                            "scripts" => [
-                                "https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js",
-                                "https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
-                                ]
-                            ]);
-                    } else {
-                        route_to("404.php", array(), ["title" => "404"]);
-                    }
-                } else { // logged in, looking at a specific user.
-                    route_to("user-index.php", 
-                        $row, 
-                        ["title" => $row["name"]]);
-                }
-            } else { // a person who is not in the database.
-                route_to("signup.php", 
-                    ["auid" => $auid],
-                    ["title" => "Signup!"]);
-            }
-        } else if (($paths[0] === "klandring")) {
-            if (count($paths) === 2) {
-                if($paths[1] === "create") {
-                    route_to("klandring-create.php", 
-                        array(), 
-                        ["title" => "Ny klandring",
-                        "scripts" => []
-                        ]);
-                    
-                } else {
-                    $klandid = $paths[1];
-                    if (is_numeric($klandid)) {
-                        $sql = "SELECT * FROM klandring WHERE id = $klandid LIMIT 1";
-                        $result = $db->query($sql);
-                        $row = $result->fetch_array(MYSQLI_ASSOC);
-                        $result->free();
-
-                        // TODO: Verify that we are allowed to see this.
-
-                        if($row) {
-                            $name = $row["title"];
-                            route_to("klandring-show.php", 
-                                $row, 
-                                ["title" => "Klandring"]);
-                        } else {
-                            header("Location: /klandring/create");
-                        }
-                    } else {
-                        header("Location: /klandring/create");
-                    }
-                }
-            } else {
-                header("Location: /klandring/create");
-            }
-        } else {
-            $found = false;
-            foreach ($_SESSION["teams"] as $team) {
-                if ($team["slug"] == $paths[0]) {
-                    $found = true;
-                    if (($team["roleid"] != ROLE_TREASURER) || (count($paths) === 1)) {
-                        route_to("team-index.php",
-                            $team,
-                            ["title" => $team["name"]]);
-                    } else if (count($paths) === 2) {
-                        if ($paths[1] === "admin") {
-                            route_to("team-admin.php",
-                                $team,
-                                ["title" => $team["name"] . " admin"]);
-                        } else if ($paths[1] === "admin-klandring") {
-                            route_to("team-admin-klandring.php",
-                                $team,
-                                ["title" => $team["name"] . " admin"]);
-                        } else if ($paths[1] === "admin-snaps") {
-                            $sql = "SELECT id FROM klandring
-                                    WHERE verdict = 0 AND team=$team[id]
-                                    ORDER BY creationdate
-                                    LIMIT 1";
-                            $result = $db->query($sql);
-                            $row = $result->fetch_array(MYSQLI_ASSOC);
-                            $result->free();
-
-                            if ($row) {
-                                header("Location: admin-snaps/$row[id]");
-                            } else {
-                                header("Location: admin-klandring");
-                            }
-                        }
-                    } else if (count($paths) === 3) {
-                        if ($paths[1] === "admin-snaps") {
-                            $klandid = $paths[2];
-                            if (is_numeric($klandid)) {
-                                $sql = "SELECT * FROM klandring
-                                        WHERE id = $klandid AND team=$team[id]
-                                        LIMIT 1";
-                                $result = $db->query($sql);
-                                $row = $result->fetch_array(MYSQLI_ASSOC);
-                                $result->free();
-
-                                if ($row) {
-                                    route_to("klandring-show.php",
-                                    $row,
-                                    // ["team" => $team, "klandring" => $row],
-                                    ["title" => $team["name"] . " admin"]);
-                                } else {
-                                    header("Location: admin");
-                                }
-                            }
-                        }
-                    } else {
-                        header("Location: /$team[slug]"); // sanitize url in case it was gibberish.
-                    }
-
-                    break;
-                }
-            }
-
-            if (!$found) {
-                route_to("404.php", array(), ["title" => "404"]);
-            }
+    } else if ($flags & AUTH_REQ) {
+        if (!isset($_SESSION["oauth-success"])) {
+            return false;
         }
+        $valid &= ($_SESSION["oauth-success"] == 1);
     }
+
+    if ($flags & IS_ROLE_TREASURER) {
+        $valid &= has_role(ROLE_TREASURER, $matches["team"]);
+    }
+    if ($flags & IS_ROLE_TEAMADMIN) {
+        $valid &= has_role(ROLE_TREASURER, $matches["team"]);
+    }
+    if ($flags & IS_ROLE_SUPER_ADMIN) {
+        $valid &= in_array($_SESSION["auid"], $ULTRA_USERS);
+    }
+
+    return $valid;
 }
+
+function has_role($role, $team_slug) {
+    if (!isset($_SESSION["teams"])) {
+        return false;
+    }
+
+    $user_role = ROLE_APPLICANT;
+    foreach ($_SESSION["teams"] as $key => $value) {
+        if ($value["slug"] === $team_slug) {
+            $user_role |= $value["roleid"];
+        }
+    }
+
+    return ($user_role & $role) == $role;
+}
+
+resolve_routes();
 ?>

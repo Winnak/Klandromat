@@ -2,6 +2,7 @@
 session_start();
 
 require("config.php");
+require("database-helper.php");
 
 if (isset($_GET["code"]) && isset($_GET["username"])) {
 
@@ -33,11 +34,7 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
             $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
             $db->set_charset("utf8");
 
-            $auid = $db->real_escape_string($_GET["username"]);
-            $sql = "SELECT id, auid, name FROM student WHERE `auid` = '$auid' LIMIT 1";
-            $result = $db->query($sql);
-            $row = $result->fetch_array(MYSQLI_ASSOC);
-            $result->free();
+            $row = get_user_from_auid($_GET["username"]);
 
             if($row) { // A person that is in the database.
 

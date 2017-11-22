@@ -1,12 +1,16 @@
-<h3><?php echo $arguments["name"] ?></h3>
-<i class="glyphicon glyphicon-barcode"></i> AU-ID: <?= $arguments["auid"] ?>.<br>
-<i class="glyphicon glyphicon-envelope"></i> E-mail: <?= $arguments["email"] ?>.<br>
-<i class="glyphicon glyphicon-earphone"></i> Telefon: <?= ((sizeof($arguments["phone"]) !== 0) ? sprintf('+45 %04d %04d', $arguments["phone"] / 10000, $arguments["phone"] % 10000) : "Telefon nummer ikke sat")?>.<br>
-<i class="glyphicon glyphicon-credit-card"></i> Årskort: <?= $arguments["year"]; ?>.<br>
+<?php
+$user = get_user_from_auid($resources["user"]);
+?>
 
-<?php if($arguments["auid"] == $_SESSION["auid"]) : ?>
+<h3><?= $user["name"] ?></h3>
+<i class="glyphicon glyphicon-barcode"></i> AU-ID: <?= $user["auid"] ?>.<br>
+<i class="glyphicon glyphicon-envelope"></i> E-mail: <?= $user["email"] ?>.<br>
+<i class="glyphicon glyphicon-earphone"></i> Telefon: <?= ((sizeof($user["phone"]) !== 0) ? sprintf('+45 %04d %04d', $user["phone"] / 10000, $user["phone"] % 10000) : "Telefon nummer ikke sat")?>.<br>
+<i class="glyphicon glyphicon-credit-card"></i> Årskort: <?= $user["year"]; ?>.<br>
+
+<?php if($user["auid"] == $_SESSION["auid"]) : ?>
 <p>
-    <a href="/<?= $arguments["auid"]; ?>/edit"><i class="glyphicon glyphicon-pencil"></i> Ret brugeroplysninger.</a><br>
+    <a href="/<?= $user["auid"]; ?>/edit"><i class="glyphicon glyphicon-pencil"></i> Ret brugeroplysninger.</a><br>
     <a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Log ud.</a>
 </p>
 <?php endif; ?>
@@ -17,9 +21,10 @@
         Du skylder <i id="debt"></i> kr.
     </div>
 <?php
+
 $sql = "SELECT * FROM `klandring` 
-        WHERE ((`to` = $arguments[id] AND verdict != 0) 
-            OR (`from` = $arguments[id]))";
+        WHERE ((`to` = $user[id] AND verdict != 0) 
+            OR (`from` = $user[id]))";
 
 $result = $db->query($sql);
 
@@ -86,11 +91,11 @@ $losings = 0;
  */
 if ($row["verdict"] == 3) {
     $losings += 5 * (1 - $row["paid"]);
-} elseif ($row["to"] == $arguments["id"]) {
+} elseif ($row["to"] == $user["id"]) {
     if ($row["verdict"] == 1) {
         $losings += 5 * (1 - $row["paid"]);
     }
-} elseif ($row["from"] == $arguments["id"]) {
+} elseif ($row["from"] == $user["id"]) {
     if ($row["verdict"] == 2) {
         $losings += 5 * (1 - $row["paid"]);
     }

@@ -1,6 +1,8 @@
 <h3>Sign up!</h3>
 <p>Ser ud til du ikke er i systemet (endnu).</p>
 
+<h1> OBS: denne side er midlertidig og fungere egentligt ikke</h1>
+
 <p>For at indskrive dig på et hold, skal du først registrer dig.</p>
 <form action="/register" method="POST">
     <div class="form-group">
