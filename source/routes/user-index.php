@@ -18,7 +18,7 @@ $user = get_user_from_auid($resources["user"]);
 <div class="panel panel-default">
     <div class="panel-heading">Dine klandringer</div>
     <div class="panel-body">
-        Du skylder <i id="debt"></i> kr.
+        <div id="debt"></div>
     </div>
 <?php
 
@@ -45,7 +45,10 @@ sort($ids);
 
 $users = array_combine($ids, get_user_infos_arr($ids));
 
-$losings = 0;
+$losings = array();
+foreach ($_SESSION["teams"] as $key => $value) {
+    $losings[$value["id"]] = 0;
+}
 ?>
 <?php if($result->num_rows > 0) : ?>
     <table class='table table-hover'>
@@ -90,20 +93,33 @@ $losings = 0;
  * Calculate the total debt.
  */
 if ($row["verdict"] == 3) {
-    $losings += 5 * (1 - $row["paid"]);
+    $losings[$row["team"]] += 5 * (1 - $row["paid"]);
 } elseif ($row["to"] == $user["id"]) {
     if ($row["verdict"] == 1) {
-        $losings += 5 * (1 - $row["paid"]);
+        $losings[$row["team"]] += 5 * (1 - $row["paid"]);
     }
 } elseif ($row["from"] == $user["id"]) {
     if ($row["verdict"] == 2) {
-        $losings += 5 * (1 - $row["paid"]);
+        $losings[$row["team"]] += 5 * (1 - $row["paid"]);
     }
 }
 ?>
 <?php endforeach ?>
         </tbody>
     </table>
-    <script>document.getElementById("debt").innerHTML = <?= $losings ?>;</script>
+    <script>document.getElementById("debt").innerHTML = "<?php
+    // TODO: Could this be cleaner?
+    foreach ($losings as $teamid => $amount) {
+        $team = "";
+        foreach ($_SESSION["teams"] as $key => $value) {
+            if ($teamid == $value["id"]) {
+                $team = $value["name"];
+                break;
+            }
+        }
+
+        echo "Du skylder $team: <i>$amount</i> kr.<br>\\n";
+    }
+    ?>";</script>
 <?php endif ?>
 </div>
