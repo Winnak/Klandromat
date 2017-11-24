@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <p><b><?= $user["name"] ?></b>, <?= $user["auid"] ?></p>
 
-<form action="/<?= $arguments["auid"] ?>/edit" id="edit-user" method="POST">
+<form action="/<?= $resources["user"] ?>/edit" id="edit-user" method="POST">
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">@</span>

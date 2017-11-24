@@ -1,4 +1,8 @@
-<?php $klandring = get_klandring_from_id($matches["kid"]); ?>
+<?php $klandring = get_klandring_from_id($resources["kid"]); 
+if (!$klandring) {
+	header("Location: /error-404");
+}
+?>
 <?php if($_SERVER['REQUEST_METHOD'] === "POST") : ?>
 <?php
 if (get_current_user_role($klandring["team"]) != ROLE_TREASURER) {

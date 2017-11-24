@@ -66,8 +66,9 @@ function get_klandring_from_id($id) {
     assert($db !== null, "DB is not ready for get_klandring_from_id.");
 
     if (!is_numeric($id)) {
-        throw new InvalidArgumentException("get_user_infos function only accepts integers. Input was: $id (".gettype($id).")");
+        throw new InvalidArgumentException("get_klandring_from_id function only accepts integers. Input was: $id (".gettype($id).")");
     }
+
     $sql = "SELECT * FROM klandring WHERE id = $id LIMIT 1";
     $result = $db->query($sql);
     $row = $result->fetch_array(MYSQLI_ASSOC);
