@@ -34,7 +34,7 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
             $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
             $db->set_charset("utf8");
 
-            $row = get_user_from_auid($_GET["username"]);
+            $row = get_user_from_auid_or_year($_GET["username"]);
 
             if($row) { // A person that is in the database.
 
@@ -52,7 +52,7 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
                 // save it to the session so we don't need to look it up later.
                 $_SESSION["student-id"]    = $row["id"];
                 $_SESSION["student-name"]  = $row["name"];
-                $_SESSION["auid"]          = $_GET["username"];
+                $_SESSION["auid"]          = $row["auid"];
                 $_SESSION["oauth-code"]    = $_GET["code"];
                 $_SESSION["oauth-success"] = 1;
                 $_SESSION["teams"]         = $teams;

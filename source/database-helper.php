@@ -53,6 +53,26 @@ function get_user_from_auid($auid) {
 }
 
  /**
+  * Fetches the user info from the database 
+  *
+  * @var mixed (string or int) $some_id corresponding to the user's auid or year in the database.
+  *
+  * @return mixed the row in the database, if it exists.
+  */
+  function get_user_from_auid_or_year($some_id) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_user_from_auid.");
+    
+    $some_id = $db->real_escape_string($some_id);
+    $sql = "SELECT * FROM student WHERE `auid` = '$some_id' OR `year` = '$some_id' LIMIT 1";
+    $result = $db->query($sql);
+    $row = $result->fetch_array(MYSQLI_ASSOC);
+    $result->free();
+
+    return $row;
+}
+
+ /**
   * Fetches a klandring from the database.
   *
   * @var int $id corresponding to the klandring's id in the database.
