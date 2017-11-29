@@ -6,11 +6,6 @@ define("AUTH_REQ",             1 << 2); // I.e. user is authenticated, and on a 
 define("IS_ROLE_TREASURER",    1 << 3);
 define("IS_ROLE_TEAMADMIN",    1 << 4);
 define("IS_ROLE_SUPER_ADMIN",  1 << 5);
-define("REST_GET",             1 << 6 | NO_TEMPLATE);
-define("REST_PUT",             1 << 7 | NO_TEMPLATE);
-define("REST_POST",            1 << 8 | NO_TEMPLATE);
-define("REST_DELETE",          1 << 9 | NO_TEMPLATE);
-define("REST_API",             REST_GET | REST_PUT | REST_POST | REST_DELETE);
 
 function resolve_routes() {
     $controller = "routes/404.php";
@@ -18,7 +13,7 @@ function resolve_routes() {
     
     foreach ([
         // direct error pages for failed ops
-        ["url" => "/^\/error-404*/",                                      "view" => "routes/404.php",                  "flags" => AUTH_REQ],
+        ["url" => "/^\/error-404*/",                                    "view" => "routes/404.php",                  "flags" => AUTH_REQ],
         
         // Home pages
         ["url" => "/^\/\s*$/",                                          "view" => "routes/upcoming.php",             "flags" => AUTH_REQ], // home page (logged in)
@@ -37,12 +32,9 @@ function resolve_routes() {
         ["url" => "/^\/(?P<team>[a-z0-9\-]{1,35})\/admin$/",           "view" => "routes/team-admin.php",           "flags" => AUTH_REQ | IS_ROLE_TREASURER], // admin page
         ["url" => "/^\/(?P<team>[a-z0-9\-]{1,35})\/admin-klandring$/", "view" => "routes/team-admin-klandring.php", "flags" => AUTH_REQ | IS_ROLE_TREASURER], // admin klandring page
 
-        // api
-        ["url" => "/^\/api\/klandring\/(?P<kid>[0-9]+)$/",              "view" => "rest-api/klandring.php",               "flags" => REST_GET],
-        
         // Fallback
-        ["url" => "/.*/",                                            "view" => "routes/404.php",                  "flags" => AUTH_REQ], // otherwise case.
-        ["url" => "/^.*$/",                                          "view" => "routes/login.php",                "flags" => NONE],     // otherwise case.
+        ["url" => "/.*/",                                              "view" => "routes/404.php",                  "flags" => AUTH_REQ], // otherwise case.
+        ["url" => "/^.*$/",                                            "view" => "routes/login.php",                "flags" => NONE],     // otherwise case.
 
         ] as $route) {
 

@@ -7,7 +7,7 @@
 //         break;
 // }
 header("status: 200");
-header("Content-Type: text/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 echo $_SERVER["HTTP_AUTHORIZATION"];
 $input = file_get_contents('php://input');
 echo "$input<br>";

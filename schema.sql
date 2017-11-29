@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS `student` (
   `year` INT(11) DEFAULT NULL,
   `name` varchar(40) DEFAULT NULL,
   `email` varchar(64) DEFAULT NULL,
-  `phone` INT(11) DEFAULT NULL
+  `phone` INT(11) DEFAULT NULL,
+  `apitoken` BINARY(16) DEFAULT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS `team` (
