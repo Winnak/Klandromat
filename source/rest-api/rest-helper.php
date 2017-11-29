@@ -31,4 +31,28 @@ function validate() {
         && valid_auth($_SERVER["HTTP_AUTHORIZATION"]);
 }
 
+function get_user_from_auth() {
+    if (!isset($_SERVER["HTTP_AUTHORIZATION"])) {
+        return FALSE;
+    }
+
+    global $db;
+    $auth = split(" ", $_SERVER["HTTP_AUTHORIZATION"]);
+
+    if ($auth[0] != "Bearer") {
+        return FALSE;
+    }
+
+    $token = $db->real_escape_string($auth[1]);
+    $sql = "SELECT * FROM `student` WHERE `apitoken`=X'$token'";
+    $result = $db->query($sql);
+    $row = $result->fetch_array(MYSQLI_ASSOC);
+
+    if (($result == FALSE) || ($row == NULL)) {
+        return FALSE;
+    }
+
+    return $row;
+}
+
 ?>

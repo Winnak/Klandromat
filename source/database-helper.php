@@ -172,6 +172,26 @@ function get_students_of_team($team_id) {
     return $result;
 }
 
+function get_user_role($student_id, $team_id) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_students_of_team.");
+
+    if (!is_numeric($student_id) || !is_numeric($team_id)) {
+        throw new InvalidArgumentException("get_user_role function only accepts integers. Input was: $student_id (".gettype($student_id)."), $team_id (".gettype($team_id).").");
+    }
+    $applicant = ROLE_APPLICANT;
+    $sql = "SELECT `roleid` FROM `teamstudent` WHERE `teamid` = $team_id AND `studentid` = $student_id";
+    
+    $result = $db->query($sql);
+    if (!$result) {
+        return ROLE_APPLICANT;
+    }
+    $row = $result->fetch_array(MYSQLI_ASSOC);
+    $result->free();
+
+    return $row["roleid"];
+}
+
 function get_current_user_role($team_id) {
     foreach ($_SESSION["teams"] as $key => $value) {
         if ($value["id"] === $team_id) {
