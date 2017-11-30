@@ -127,8 +127,6 @@ function get_klandring_from_id($id) {
     while ($row = $result->fetch_assoc()) {
         $your_klandringer[] = $row;
     }
-    $result->free();
-
     foreach ($your_klandringer as $klandring) {
         $ids[] = intval($klandring["from"]);
         $ids[] = intval($klandring["to"]);
@@ -143,7 +141,6 @@ function get_klandring_from_id($id) {
     while ($row = $result->fetch_assoc()) {
         $their_klandringer[] = $row;
     }
-    $result->free();
 
     foreach ($their_klandringer as $klandring) {
         $ids[] = intval($klandring["from"]);
@@ -246,7 +243,7 @@ function get_user_infos_arr($ids) {
     }
     $manifest = substr($manifest, 0, -1); // remove trailing comma
 
-    $sql = "SELECT * FROM student WHERE id IN ($manifest) LIMIT " . count($ids);
+    $sql = "SELECT id,auid,`name`,year,email,phone FROM student WHERE id IN ($manifest) LIMIT " . count($ids);
     $result = $db->query($sql);
     
     $rows = [];

@@ -9,16 +9,20 @@ if (!$user) {
     die();
 }
 
-try {
-    $klandringer = get_user_klandringer($user["id"]);
+if (!isset($_GET["team"]) || !is_numeric($_GET["team"])) {
+    require("400.php");
+    die();
+}
 
-    header("status: 200");
-    echo json_encode($klandringer);
+$result = get_overview_klandringer($user["id"], $_GET["team"]);
 
-} catch (InvalidArgumentException $e) {
+if (!$result) {
     require("404.php");
     die();
 }
+
+echo json_encode($result);
+
 
 $db->close();
 ?>
