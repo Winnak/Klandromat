@@ -8,51 +8,13 @@
 <?php
 global $db;
 
-$your_klandringer = [];
-$their_klandringer = [];
-$ids = [];
-
 $id = $_SESSION["student-id"];
 
-// get all of your klandringer
-$sql = "SELECT * FROM `klandring` 
-        WHERE ((team = $team[id]) AND (`from` = $id AND verdict = 0))";
+$result = get_overview_klandringer($id, $team["id"]);
+$your_klandringer = $result["yours"];
+$their_klandringer = $result["theirs"];
+$users = $result["users"];
 
-$result = $db->query($sql);
-
-while ($row = $result->fetch_assoc()) {
-    $your_klandringer[] = $row;
-}
-$result->free();
-
-foreach ($your_klandringer as $klandring) {
-    $ids[] = intval($klandring["from"]);
-    $ids[] = intval($klandring["to"]);
-}
-
-// get all of their klandringer
-$sql = "SELECT `from` FROM `klandring` 
-        WHERE ((team = $team[id]) AND ((`from` != $id) AND (verdict = 0)))";
-
-$result = $db->query($sql);
-
-while ($row = $result->fetch_assoc()) {
-    $their_klandringer[] = $row;
-}
-$result->free();
-
-foreach ($their_klandringer as $klandring) {
-    $ids[] = intval($klandring["from"]);
-}
-
-$users = [];
-if (count($ids)) {
-    // todo: solve in one go, instead of 3.
-    $ids = array_values(array_unique($ids));
-    sort($ids);
-
-    $users = array_combine($ids, get_user_infos_arr($ids));
-}
 
 $losings = 0;
 ?>

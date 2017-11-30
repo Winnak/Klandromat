@@ -98,6 +98,103 @@ function get_klandring_from_id($id) {
 }
 
  /**
+  * Fetches a list of unresolved klandringer relating to the user.
+  *
+  * @var int $studentid corresponding to the user's id.
+  *
+  * @throws InvalidArgumentException if the input was not strictly integers.
+  *
+  * @return mixed the row in the database, if it exists.
+  */
+  function get_overview_klandringer($studentid, $team_id) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_overview_klandringer.");
+
+    if (!is_numeric($studentid) || !is_numeric($team_id)) {
+        throw new InvalidArgumentException("get_overview_klandringer function only accepts integers. Input was: $studentid (".gettype($studentid).") and $team_id (".gettype($team_id).")");
+    }
+
+    $your_klandringer = [];
+    $their_klandringer = [];
+    $ids = [];
+
+    // get all of your klandringer
+    $sql = "SELECT * FROM `klandring` 
+            WHERE ((team = $team_id) AND (`from` = $studentid AND verdict = 0))";
+
+    $result = $db->query($sql);
+
+    while ($row = $result->fetch_assoc()) {
+        $your_klandringer[] = $row;
+    }
+    $result->free();
+
+    foreach ($your_klandringer as $klandring) {
+        $ids[] = intval($klandring["from"]);
+        $ids[] = intval($klandring["to"]);
+    }
+
+    // get all of their klandringer
+    $sql = "SELECT `from` FROM `klandring` 
+            WHERE ((team = $team_id) AND ((`from` != $studentid) AND (verdict = 0)))";
+
+    $result = $db->query($sql);
+
+    while ($row = $result->fetch_assoc()) {
+        $their_klandringer[] = $row;
+    }
+    $result->free();
+
+    foreach ($their_klandringer as $klandring) {
+        $ids[] = intval($klandring["from"]);
+    }
+
+    $users = [];
+    if (count($ids)) {
+        // todo: solve in one go, instead of 3.
+        $ids = array_values(array_unique($ids));
+        sort($ids);
+
+        $users = array_combine($ids, get_user_infos_arr($ids));
+    }
+
+    return array("yours"  => $your_klandringer, 
+                 "theirs" => $their_klandringer,
+                 "users"  => $users);
+}
+
+ /**
+  * Fetches a list of unresolved klandringer relating to the user.
+  *
+  * @var int $studentid corresponding to the user's id.
+  *
+  * @throws InvalidArgumentException if the input was not strictly integers.
+  *
+  * @return mixed the row in the database, if it exists.
+  */
+function get_user_klandringer($studentid) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_overview_klandringer.");
+
+    if (!is_numeric($studentid)) {
+        throw new InvalidArgumentException("get_overview_klandringer function only accepts integers. Input was: $studentid (".gettype($studentid).")");
+    }
+
+    $sql = "SELECT * FROM `klandring` 
+    WHERE ((`to` = $studentid AND verdict != 0) 
+        OR (`from` = $studentid))";
+
+    $result = $db->query($sql);
+
+    $klandringer = [];
+    while ($row = $result->fetch_assoc()) {
+        $klandringer[] = $row;
+    }
+
+    return $klandringer;
+}
+
+ /**
   * Fetches a team from the database.
   *
   * @var string $slug corresponding to the team's slug in the database.

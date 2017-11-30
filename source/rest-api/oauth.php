@@ -32,6 +32,9 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
                 $sql = "UPDATE `student` SET `apitoken`=X'$_GET[code]' WHERE id=$row[id]";
                 $db->query($sql);
 
+                // temp fix.
+                $row["apitoken"] = "";
+
                 $response = array(
                     "auid" => "$row[auid]",
                     "token" => "$_GET[code]",
@@ -42,20 +45,17 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
                 );
 
                 header("status: 200");
+                header("Content-Type: application/json; charset=UTF-8");
+                echo json_encode($response);
             } else {
-                header("status: 401");
-                $response = array("message" => "Unauthorized: No user registered as $_GET[username].");
+                require("401.php");
+                die();
             }
-
-            header("Content-Type: application/json; charset=UTF-8");
-            echo json_encode($response);
         }
     }
 } else {
-    header("Content-Type: application/json; charset=UTF-8");
-    header("status: 400");
-    $response = array("message" => "Bad Request: Incorrect request.");
-    echo json_encode($response);
+    require("400.php");
+    die();
 }
 $db->close();
 ?>

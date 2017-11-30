@@ -22,16 +22,7 @@ $user = get_user_from_auid($resources["user"]);
     </div>
 <?php
 
-$sql = "SELECT * FROM `klandring` 
-        WHERE ((`to` = $user[id] AND verdict != 0) 
-            OR (`from` = $user[id]))";
-
-$result = $db->query($sql);
-
-$klandringer = [];
-while ($row = $result->fetch_assoc()) {
-    $klandringer[] = $row;
-}
+$klandringer = get_user_klandringer($user["id"]);
 
 $ids = [];
 foreach ($klandringer as $klandring) {
@@ -50,7 +41,7 @@ foreach ($_SESSION["teams"] as $key => $value) {
     $losings[$value["id"]] = 0;
 }
 ?>
-<?php if($result->num_rows > 0) : ?>
+<?php if(count($klandringer) > 0) : ?>
     <table class='table table-hover'>
         <thead>
             <tr>

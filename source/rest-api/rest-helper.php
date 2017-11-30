@@ -8,7 +8,7 @@ $db->set_charset("utf8");
 
 function valid_auth($token) {
     global $db;
-    $auth = split(" ", $token);
+    $auth = explode(" ", $token);
 
     if ($auth[0] != "Bearer") {
         return FALSE;
@@ -37,7 +37,7 @@ function get_user_from_auth() {
     }
 
     global $db;
-    $auth = split(" ", $_SERVER["HTTP_AUTHORIZATION"]);
+    $auth = explode(" ", $_SERVER["HTTP_AUTHORIZATION"]);
 
     if ($auth[0] != "Bearer") {
         return FALSE;
@@ -46,11 +46,12 @@ function get_user_from_auth() {
     $token = $db->real_escape_string($auth[1]);
     $sql = "SELECT * FROM `student` WHERE `apitoken`=X'$token'";
     $result = $db->query($sql);
-    $row = $result->fetch_array(MYSQLI_ASSOC);
 
-    if (($result == FALSE) || ($row == NULL)) {
+    if ($result == FALSE) {
         return FALSE;
     }
+
+    $row = $result->fetch_array(MYSQLI_ASSOC);
 
     return $row;
 }
