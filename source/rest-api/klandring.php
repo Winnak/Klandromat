@@ -10,8 +10,8 @@ if (!$user) {
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case "GET":
-        if (isset($_GET["id"])) {
-            try {
+        try {
+            if (isset($_GET["id"])) {
                 $row = get_klandring_from_id($_GET["id"]);
                 if (get_user_role($user["id"], $row["team"]) == ROLE_APPLICANT) {
                     require("404.php");
@@ -21,13 +21,20 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 // TODO: validate that verdict is correct.
 
                 echo json_encode($row);
+            } else if (isset($_GET["team"])) {
+                if (get_user_role($user["id"], $_GET["team"]) == ROLE_APPLICANT) {
+                    require("404.php");
+                    die();
+                }
 
-            } catch (InvalidArgumentException $e) {
-                require("404.php");
+                echo json_encode(get_klandring_from_team($_GET["team"]));
+            } else {
+                require("400.php");
                 die();
             }
-        } else {
-            require("400.php");
+
+        } catch (InvalidArgumentException $e) {
+            require("404.php");
             die();
         }
         break;
