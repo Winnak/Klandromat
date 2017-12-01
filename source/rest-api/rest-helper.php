@@ -1,6 +1,7 @@
 <?php
 require("../config.php");
 require("../database-helper.php");
+header("Content-Type: application/json; charset=UTF-8");
 
 $db = new mysqli(MYSQL_PROVIDER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
 $db->set_charset("utf8");

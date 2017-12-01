@@ -1,6 +1,5 @@
 <?php
-require("rest-helper.php");
-header("Content-Type: application/json; charset=UTF-8");
+require_once("rest-helper.php");
 
 $user = get_user_from_auth();
 
@@ -9,26 +8,38 @@ if (!$user) {
     die();
 }
 
-if (isset($_GET["id"])) {
-    try {
-        $row = get_klandring_from_id($_GET["id"]);
-        if (get_user_role($user["id"], $row["team"]) == ROLE_APPLICANT) {
-            require("404.php");
+switch ($_SERVER['REQUEST_METHOD']) {
+    case "GET":
+        if (isset($_GET["id"])) {
+            try {
+                $row = get_klandring_from_id($_GET["id"]);
+                if (get_user_role($user["id"], $row["team"]) == ROLE_APPLICANT) {
+                    require("404.php");
+                    die();
+                }
+
+                // TODO: validate that verdict is correct.
+
+                echo json_encode($row);
+
+            } catch (InvalidArgumentException $e) {
+                require("404.php");
+                die();
+            }
+        } else {
+            require("400.php");
             die();
         }
+        break;
 
-        // TODO: validate that verdict is correct.
+    case "POST":
+        break;
 
-        header("status: 200");
-        echo json_encode($row);
-
-    } catch (InvalidArgumentException $e) {
-        require("404.php");
+    default:
+        require("405.php");
         die();
-    }
-} else {
-    require("400.php");
-    die();
+        break;
+    
 }
 
 $db->close();

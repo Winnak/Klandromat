@@ -1,6 +1,5 @@
 <?php
-require("rest-helper.php");
-header("Content-Type: application/json; charset=UTF-8");
+require_once("rest-helper.php");
 
 $user = get_user_from_auth();
 
@@ -12,7 +11,6 @@ if (!$user) {
 try {
     $klandringer = get_overview_klandringer($user["id"]);
 
-    header("status: 200");
     echo json_encode($klandringer);
 
 } catch (InvalidArgumentException $e) {

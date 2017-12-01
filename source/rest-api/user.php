@@ -1,6 +1,5 @@
 <?php
-require("rest-helper.php");
-header("Content-Type: application/json; charset=UTF-8");
+require_once("rest-helper.php");
 
 if (validate() == FALSE) {
     require("403.php");

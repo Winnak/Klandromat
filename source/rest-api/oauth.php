@@ -44,8 +44,6 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
                     "teams" => $teams,
                 );
 
-                header("status: 200");
-                header("Content-Type: application/json; charset=UTF-8");
                 echo json_encode($response);
             } else {
                 require("401.php");

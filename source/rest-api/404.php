@@ -1,7 +1,7 @@
 <?php
+require_once("rest-helper.php");
 if (isset($db)) {
     $db->close();
 }
-header("status: 404");
-header("Content-Type: text/json; charset=UTF-8");
+http_response_code(404);
 ?>{"code":404,"message":"Resource not found"}
