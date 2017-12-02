@@ -21,18 +21,18 @@ if (!defined("DATABASE_CONSTS")) {
     $VALID_LETTERS = str_split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
     define("VALID_PATH_LETTERS_LENGTH", count($VALID_LETTERS));
 }
-    
+
 function get_random_filename($length) {
     global $VALID_LETTERS;
     $path = "";
-    for ($i=0; $i < $length; $i++) { 
+    for ($i=0; $i < $length; $i++) {
         $path .= $VALID_LETTERS[rand(0, VALID_PATH_LETTERS_LENGTH - 1)];
     }
     return $path;
 }
 
  /**
-  * Fetches the user info from the database 
+  * Fetches the user info from the database
   *
   * @var string $auid corresponding to the user's auid in the database.
   *
@@ -53,7 +53,7 @@ function get_user_from_auid($auid) {
 }
 
  /**
-  * Fetches the user info from the database 
+  * Fetches the user info from the database
   *
   * @var mixed (string or int) $some_id corresponding to the user's auid or year in the database.
   *
@@ -62,7 +62,7 @@ function get_user_from_auid($auid) {
   function get_user_from_auid_or_year($some_id) {
     global $db;
     assert($db !== null, "DB is not ready for get_user_from_auid.");
-    
+
     $some_id = $db->real_escape_string($some_id);
     $sql = "SELECT * FROM student WHERE `auid` = '$some_id' OR `year` = '$some_id' LIMIT 1";
     $result = $db->query($sql);
@@ -166,7 +166,7 @@ function get_klandring_from_team($team_id) {
     $ids = [];
 
     // get all of your klandringer
-    $sql = "SELECT * FROM `klandring` 
+    $sql = "SELECT * FROM `klandring`
             WHERE ((team = $team_id) AND (`from` = $studentid AND verdict = 0))";
 
     $result = $db->query($sql);
@@ -180,7 +180,7 @@ function get_klandring_from_team($team_id) {
     }
 
     // get all of their klandringer
-    $sql = "SELECT `from` FROM `klandring` 
+    $sql = "SELECT `from` FROM `klandring`
             WHERE ((team = $team_id) AND ((`from` != $studentid) AND (verdict = 0)))";
 
     $result = $db->query($sql);
@@ -202,7 +202,7 @@ function get_klandring_from_team($team_id) {
         $users = array_combine($ids, get_user_infos_arr($ids));
     }
 
-    return array("yours"  => $your_klandringer, 
+    return array("yours"  => $your_klandringer,
                  "theirs" => $their_klandringer,
                  "users"  => $users);
 }
@@ -224,8 +224,8 @@ function get_user_klandringer($studentid) {
         throw new InvalidArgumentException("get_overview_klandringer function only accepts integers. Input was: $studentid (".gettype($studentid).")");
     }
 
-    $sql = "SELECT * FROM `klandring` 
-    WHERE ((`to` = $studentid AND verdict != 0) 
+    $sql = "SELECT * FROM `klandring`
+    WHERE ((`to` = $studentid AND verdict != 0)
         OR (`from` = $studentid))";
 
     $result = $db->query($sql);
@@ -259,7 +259,7 @@ function get_team_from_slug($slug) {
 }
 
  /**
-  * Fetches the infos from a 1... users from the database. 
+  * Fetches the infos from a 1... users from the database.
   *
   * @var int $ids,... ids corresponding to the user id in the database.
   *
@@ -279,11 +279,11 @@ function get_user_infos_arr($ids) {
     global $db;
     assert($db !== null, "DB is not ready for get_user_infos.");
     assert(count($ids) > 0, "get_user_infos needs at least 1 id.");
-    
+
     $manifest = "";
-    for ($i=0; $i < count($ids); $i++) { 
+    for ($i=0; $i < count($ids); $i++) {
         $id = $ids[$i];
-        if (!is_int($id) || ($id < 0)) {
+        if (!is_numeric($id) || ($id < 0)) {
             throw new InvalidArgumentException("get_user_infos function only accepts integers. Input was: $id (".gettype($id).")");
         }
         $manifest .= $id.",";
@@ -292,7 +292,48 @@ function get_user_infos_arr($ids) {
 
     $sql = "SELECT id,auid,`name`,year,email,phone FROM student WHERE id IN ($manifest) LIMIT " . count($ids);
     $result = $db->query($sql);
-    
+
+    $rows = [];
+    while($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $rows[] = $row;
+    }
+    return $rows;
+}
+
+ /**
+  * Fetches the infos from a 1... teams from the database.
+  *
+  * @var int $ids,... ids corresponding to the team id in the database.
+  *
+  * @throws InvalidArgumentException if the input was not strictly integers.
+  *
+  * @return mixed array of team infos
+  */
+  function get_team_infos(... $ids) {
+    return get_team_infos_arr($ids);
+}
+
+/**
+ * @see get_team_infos
+ */
+function get_team_infos_arr($ids) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_team_infos.");
+    assert(count($ids) > 0, "get_team_infos needs at least 1 id.");
+
+    $manifest = "";
+    for ($i=0; $i < count($ids); $i++) {
+        $id = $ids[$i];
+        if (!is_numeric($id) || ($id < 0)) {
+            throw new InvalidArgumentException("get_team_infos function only accepts integers. Input was: $id (".gettype($id).")");
+        }
+        $manifest .= $id.",";
+    }
+    $manifest = substr($manifest, 0, -1); // remove trailing comma
+
+    $sql = "SELECT * FROM team WHERE id IN ($manifest) LIMIT " . count($ids);
+    $result = $db->query($sql);
+
     $rows = [];
     while($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $rows[] = $row;
@@ -322,7 +363,7 @@ function get_user_role($student_id, $team_id) {
     }
     $applicant = ROLE_APPLICANT;
     $sql = "SELECT `roleid` FROM `teamstudent` WHERE `teamid` = $team_id AND `studentid` = $student_id";
-    
+
     $result = $db->query($sql);
     if (!$result) {
         return ROLE_APPLICANT;
