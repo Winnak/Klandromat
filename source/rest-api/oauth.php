@@ -46,14 +46,12 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
 
                 echo json_encode($response);
             } else {
-                require("401.php");
-                die();
+                raise_error(401);
             }
         }
     }
 } else {
-    require("400.php");
-    die();
+    raise_error(400);
 }
 $db->close();
 ?>

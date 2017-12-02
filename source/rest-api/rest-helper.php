@@ -57,4 +57,43 @@ function get_user_from_auth() {
     return $row;
 }
 
+function get_default_error_message($status) {
+    switch ($status) {
+        case 400:
+            return $message = "Bad Request";
+        case 401:
+            return $message = "Unauthorized";
+        case 402:
+            return $message = "Payment Required";
+        case 403:
+            return $message = "Forbidden";
+        case 404:
+            return $message = "Not Found";
+        case 405:
+            return $message = "Method Not Allowed";
+        case 406:
+            return $message = "Not Acceptable";
+        case 411:
+            return $message = "Length Required";
+        default:
+            return $message = "¯\_(ツ)_/¯";
+    }
+}
+
+function raise_error($status, $message=null) {
+    global $db;
+    http_response_code($status);
+
+    if ($message == null) {
+        $message = get_default_error_message($status);
+    }
+    
+    echo json_encode(array(
+        "code" => $status,
+        "message" => $message
+    ));
+    $db->close();
+    die();
+}
+
 ?>

@@ -4,8 +4,7 @@ require_once("rest-helper.php");
 $user = get_user_from_auth();
 
 if (!$user) {
-    require("403.php");
-    die();
+    raise_error(403);
 }
 
 try {
@@ -14,8 +13,7 @@ try {
     echo json_encode($klandringer);
 
 } catch (InvalidArgumentException $e) {
-    require("404.php");
-    die();
+    raise_error(404, $e);
 }
 
 $db->close();
