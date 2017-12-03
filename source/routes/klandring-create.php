@@ -1,25 +1,20 @@
 <?php $id = $_SESSION["student-id"] ?>
 <?php if($_SERVER['REQUEST_METHOD'] === "POST") : ?>
 <?php
-$title = $db->real_escape_string($_POST["title"]);
-$desc = $db->real_escape_string($_POST["desc"]);
-$to = intval($_POST["toid"]);
-$team = intval($_POST["team"]);
+try {
+	$result = post_klandring($_POST["title"], $_POST["desc"], $id, $_POST["toid"], $_POST["team"]);
 
-if ($to < 0 || !is_numeric($_POST["toid"]) || !is_numeric($_POST["team"])) {
+	if ($result) {
+		header("Location: /");
+	}
+	else {
+		header("Location: /klandring/create");
+	}
+
+} catch (InvalidArgumentException $e) {
 	header("Location: /klandring/create");
 	die();
-}
 
-$sql = "INSERT INTO klandring (`title`, `description`, `from`, `to`, `team`) 
-		VALUES ('$title', '$desc', $id, $to, $team);";
-
-$result = $db->query($sql);
-if ($result) {
-	header("Location: /");
-}
-else {
-	header("Location: /klandring/create");
 }
 ?>
 <?php else: /* GET */ ?>

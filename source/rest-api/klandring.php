@@ -44,7 +44,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 } else {
                     $row = get_klandring_from_id($_GET["id"]);
-                    if (get_user_role($user["id"], $row["team"]) == ROLE_APPLICANT) {
+                    if ($row || get_user_role($user["id"], $row["team"]) == ROLE_APPLICANT) {
                         raise_error(404);
                     }
 
@@ -64,12 +64,49 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
 
         } catch (InvalidArgumentException $e) {
-            raise_error(404, $e);
+            raise_error(400, $e->getMessage()); // while debugging we use this. uncomment line below when ready.
+            // raise_error(404);
         }
         break;
 
     case "POST":
-        break;
+        // first validate
+        foreach ($_FILES as $key => $file) {
+            if ($file["error"] != UPLOAD_ERR_OK || $file["size"] == 0) {
+                raise_error(400, "$key, $file[name] was not uploaded correctly");
+            } else if ($file["size"] > 8388608) { // 8 MB in bytes
+                raise_error(413, "$key, $file[name] was more than 8MB large");
+            }
+        }
+
+        // create the klandring (since all went well)
+        $result = post_klandring($_POST["title"], $_POST["desc"], $user["id"], 2, 1);
+        if (!$result) {
+            raise_error(500, "Unexpected error");
+        }
+
+        // attach all media to the klandring.
+        $klandring_id = $db->insert_id;
+
+        foreach ($_FILES as $key => $file) {
+            $ext = pathinfo($file["name"], PATHINFO_EXTENSION);
+            if (strlen($ext) == 0) {
+                $ext = "bin";
+            }
+            $target_filename = get_random_filename(59 -  strlen($ext)).".$ext";
+            
+            if (move_uploaded_file($file["tmp_name"],  DATA_PATH.$target_filename)) {
+                // sql the stuff.
+            } else {
+                raise_error(400, "File malformed");
+            }
+
+            // hopefully no need to check for errors at this point, since it has all been checked once before.
+            post_klandring_meta($klandring_id, $user["id"], $file["type"], $file["name"], $target_filename);
+        }
+
+        raise_success("Klandring successfully registered");
+        break;        
 
     default:
         raise_error(405);

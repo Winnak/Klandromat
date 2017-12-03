@@ -96,4 +96,16 @@ function raise_error($status, $message=null) {
     die();
 }
 
+function raise_success($message) {
+    global $db;
+    http_response_code(200);
+
+    echo json_encode(array(
+        "code" => 200,
+        "message" => $message
+    ));
+    $db->close();
+    die();
+}
+
 ?>

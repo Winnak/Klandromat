@@ -17,7 +17,8 @@ if (!defined("DATABASE_CONSTS")) {
     define("WINNER_BOTH", WINNER_KLANDRER | WINNER_KLANDRET); // Klandring was a draw.
 
     // meta
-    define("DATA_PATH", "/static/data/");
+    define ("SITE_ROOT", realpath(dirname(__FILE__)));
+    define("DATA_PATH", SITE_ROOT."/static/data/");
     $VALID_LETTERS = str_split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
     define("VALID_PATH_LETTERS_LENGTH", count($VALID_LETTERS));
 }
@@ -72,6 +73,42 @@ function get_user_from_auid($auid) {
     return $row;
 }
 
+function post_klandring($title, $desc, $from, $to, $team) {
+    global $db;
+
+    if (!is_numeric($to) ||!is_numeric($from) || !is_numeric($team)) {
+        throw new InvalidArgumentException("post_klandring function expects integers. Input was: $to (".gettype($to)."), $team (".gettype($team)."), $from (".gettype($from).")");
+    }
+
+    $title = $db->real_escape_string($title);
+    $desc = $db->real_escape_string($desc);
+
+    
+    $sql = "INSERT INTO klandring (`title`, `description`, `from`, `to`, `team`) 
+            VALUES ('$title', '$desc', $from, $to, $team)";
+    
+    return $db->query($sql);
+}
+
+function post_klandring_meta($klandring_id, $from, $mime, $oldname, $path) {
+    global $db;
+
+    if (!is_numeric($klandring_id) || !is_numeric($from)) {
+        throw new InvalidArgumentException("post_klandring_meta function expects integers. Input was: $klandring_id (".gettype($klandring_id)."), $from (".gettype($from).")");
+    }
+    
+    $oldname = $db->real_escape_string($oldname);
+    $path = $db->real_escape_string($path);
+    
+    // TODO: validate MIME-type
+    $mime = $db->real_escape_string($mime);
+    
+    $sql = "INSERT INTO klandringmeta (`klandringid`, `uploadedby`, `mime`, `oldname`, `newpath`) 
+            VALUES ('$klandring_id', '$from', $mime, $oldname, $path)";
+    
+    return $db->query($sql);
+}
+
  /**
   * Fetches a klandring from the database.
   *
@@ -91,7 +128,11 @@ function get_klandring_from_id($id) {
 
     $sql = "SELECT * FROM klandring WHERE id = $id LIMIT 1";
     $result = $db->query($sql);
-    $row = $result->fetch_array(MYSQLI_ASSOC);
+    $row = null;
+    if ($result) {
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+    }
+     
     $result->free();
 
     return $row;

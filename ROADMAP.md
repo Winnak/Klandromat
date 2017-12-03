@@ -6,11 +6,9 @@
 * Write a CONTRIBUTING.md to make github happy.
 
 ## Backend
-* Create a restful api that gives sends JSON.
 * Create a `database-setup.php` that sets up the database for first time developers.
 * Create page for editing klandringer.
 * Manage user roles
-* Create "upload media to klandring"
 * Switch welcome page to use mark down instead
 * Create blog/news-style welcome page for the team.
 
@@ -19,3 +17,4 @@
 * Create calender for upcoming SNAPS.
 * Fix edit klandring page's select user style.
 * Fix edit klandring page's description box width.
+* Hookup file uploading to create-klandring.phpp

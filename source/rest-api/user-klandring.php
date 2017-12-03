@@ -13,7 +13,7 @@ try {
     echo json_encode($klandringer);
 
 } catch (InvalidArgumentException $e) {
-    raise_error(404, $e);
+    raise_error(404, $e->getMessage());
 }
 
 $db->close();
