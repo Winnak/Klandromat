@@ -132,10 +132,39 @@ function get_klandring_from_id($id) {
     if ($result) {
         $row = $result->fetch_array(MYSQLI_ASSOC);
     }
-     
-    $result->free();
 
     return $row;
+}
+
+ /**
+  * Fetches the klandring media from the database.
+  *
+  * @var int $id corresponding to the klandring's id in the database.
+  *
+  * @throws InvalidArgumentException if the input was not strictly integers.
+  *
+  * @return mixed the rows in the database, if it exists.
+  */
+  function get_klandring_media_from_id($id) {
+    global $db;
+    assert($db !== null, "DB is not ready for get_klandring_media_from_id.");
+
+    if (!is_numeric($id)) {
+        throw new InvalidArgumentException("get_klandring_media_from_id function only accepts integers. Input was: $id (".gettype($id).")");
+    }
+
+    $sql = "SELECT klandringid,uploadedby,uploaddate,mime,newpath FROM klandringmeta WHERE klandringid = $id";
+    $result = $db->query($sql);
+    if (!$result) {
+        return null;
+    }
+
+    $rows = [];
+    while($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $rows[] = $row;
+    }
+
+    return $rows;
 }
 
  /**
@@ -410,7 +439,6 @@ function get_user_role($student_id, $team_id) {
         return ROLE_APPLICANT;
     }
     $row = $result->fetch_array(MYSQLI_ASSOC);
-    $result->free();
 
     return $row["roleid"];
 }

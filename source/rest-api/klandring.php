@@ -44,13 +44,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 } else {
                     $row = get_klandring_from_id($_GET["id"]);
-                    if ($row || get_user_role($user["id"], $row["team"]) == ROLE_APPLICANT) {
+                    if (get_user_role($user["id"], $row["team"]) == ROLE_APPLICANT) {
                         raise_error(404);
                     }
 
-                    // TODO: validate that verdict is correct.
-
-                    echo json_encode($row);
+                    if (isset($_GET["mediamanifest"])) {
+                        echo json_encode(get_klandring_media_from_id($_GET["id"]));
+                    } else {
+                        echo json_encode($row);
+                    }
                 }
 
             } else if (isset($_GET["team"])) {
