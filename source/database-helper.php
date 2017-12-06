@@ -415,18 +415,24 @@ function get_students_of_team($team_id) {
     global $db;
     assert($db !== null, "DB is not ready for get_students_of_team.");
 
-    $sql = "SELECT A.* FROM student A
+    $sql = "SELECT A.id,A.auid,A.`name`,A.year,A.email,A.phone FROM student A
         INNER JOIN teamstudent B ON A.id = B.studentid
-        WHERE B.teamid = $team_id";
+        WHERE B.teamid = $team_id
+        ORDER BY `A`.`name` ASC";
 
     $result = $db->query($sql);
 
-    return $result;
+    $rows = [];
+    while($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $rows[] = $row;
+    }
+
+    return $rows;
 }
 
 function get_user_role($student_id, $team_id) {
     global $db;
-    assert($db !== null, "DB is not ready for get_students_of_team.");
+    assert($db !== null, "DB is not ready for get_user_role.");
 
     if (!is_numeric($student_id) || !is_numeric($team_id)) {
         throw new InvalidArgumentException("get_user_role function only accepts integers. Input was: $student_id (".gettype($student_id)."), $team_id (".gettype($team_id).").");

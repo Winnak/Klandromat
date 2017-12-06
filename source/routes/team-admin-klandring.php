@@ -29,8 +29,8 @@ else {
 <?php
 $students = get_students_of_team($team["id"]);
 $options = "";
-while ($row = $students->fetch_assoc()) {
-	$options .= "<option value='$row[id]'>$row[name]</option>";
+foreach ($students as $student) {
+	$options .= "<option value='$student[id]'>$student[name]</option>";
 }
 ?>
 <form class="col col-md-4" action="/<?= $team["slug"] ?>/admin-klandring" id="edit-user" method="POST">

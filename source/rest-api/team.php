@@ -16,8 +16,17 @@ if (isset($_GET["id"])) {
             raise_error(400);
         }
     }
-    
-    echo json_encode(get_team_infos_arr($ids));
+    if (isset($_GET["students"])) {
+        $students = [];
+        foreach ($ids as $teamid) {
+            $students[$teamid] = get_students_of_team($teamid);
+        }
+
+        echo json_encode($students);
+    }
+    else {
+        echo json_encode(get_team_infos_arr($ids));
+    }
 
 } else {
     raise_error(400);
