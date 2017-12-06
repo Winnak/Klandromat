@@ -5,7 +5,7 @@ $user = get_user_from_auth();
 
 
 if (!$user) {
-    raise_error(403);
+    raise_error(401);
 }
 
 switch ($_SERVER['REQUEST_METHOD']) {
@@ -87,7 +87,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         // create the klandring (since all went well)
-        $result = post_klandring($_POST["title"], $_POST["desc"], $user["id"], 2, 1);
+        $result = post_klandring($_POST["title"], $_POST["desc"], $user["id"], $_POST["to"], $_POST["team"]);
         if (!$result) {
             raise_error(500, "Unexpected error");
         }

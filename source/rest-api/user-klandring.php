@@ -4,7 +4,7 @@ require_once("rest-helper.php");
 $user = get_user_from_auth();
 
 if (!$user) {
-    raise_error(403);
+    raise_error(401);
 }
 
 try {

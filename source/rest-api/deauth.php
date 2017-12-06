@@ -1,7 +1,7 @@
 <?php
 require_once("rest-helper.php");
 if (validate() == FALSE) {
-    raise_error(403);
+    raise_error(401);
 }
 
 $auth = split(" ", $_SERVER["HTTP_AUTHORIZATION"]);
