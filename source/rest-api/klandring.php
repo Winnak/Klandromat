@@ -3,6 +3,7 @@ require_once("rest-helper.php");
 
 $user = get_user_from_auth();
 
+
 if (!$user) {
     raise_error(403);
 }
@@ -39,8 +40,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     if ($row == null) {
                         raise_error(404);
                     }
-
-                    echo json_encode($row);
+                    
+                    echo json_encode(array(
+                        "klandring" => $row,
+                        "manifest" => get_klandring_media_from_id($_GET["id"]),
+                        "users" => get_user_infos($row["from"], $row["to"])
+                    ));
 
                 } else {
                     $row = get_klandring_from_id($_GET["id"]);
@@ -48,11 +53,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         raise_error(404);
                     }
 
-                    if (isset($_GET["mediamanifest"])) {
-                        echo json_encode(get_klandring_media_from_id($_GET["id"]));
-                    } else {
-                        echo json_encode($row);
-                    }
+                    echo json_encode(array(
+                        "klandring" => $row,
+                        "manifest" => get_klandring_media_from_id($_GET["id"]),
+                        "users" => get_user_infos($row["from"], $row["to"])
+                    ));
                 }
 
             } else if (isset($_GET["team"])) {
