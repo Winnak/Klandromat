@@ -104,7 +104,7 @@ function post_klandring_meta($klandring_id, $from, $mime, $oldname, $path) {
     $mime = $db->real_escape_string($mime);
     
     $sql = "INSERT INTO klandringmeta (`klandringid`, `uploadedby`, `mime`, `oldname`, `newpath`) 
-            VALUES ('$klandring_id', '$from', $mime, $oldname, $path)";
+            VALUES ($klandring_id, $from, '$mime', '$oldname', '$path')";
     
     return $db->query($sql);
 }
@@ -250,7 +250,7 @@ function get_klandring_from_team($team_id) {
     }
 
     // get all of their klandringer
-    $sql = "SELECT `from` FROM `klandring`
+    $sql = "SELECT `from`,`team` FROM `klandring`
             WHERE ((team = $team_id) AND ((`from` != $studentid) AND (verdict = 0)))";
 
     $result = $db->query($sql);
