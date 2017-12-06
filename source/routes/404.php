@@ -1,4 +1,4 @@
-<?php header("Status: 404", true, 404) ?>
+<?php http_response_code(404); ?>
 <h1>Kunne ikke finde siden du ledte efter</h1>
 <br>
 Hvis du mener dette er en fejl er du mere end velkommen til at rette den her: <a href="https://github.com/Winnak/klandromat">github.com/Winnak/klandromat</a>.
