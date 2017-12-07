@@ -457,4 +457,27 @@ function get_current_user_role($team_id) {
     }
     return ROLE_APPLICANT;
 }
+
+/**
+  * Removes a klandring from the database, if the klandring is less than an hour old.
+  *
+  * @var int $klandring_id id of the klandring
+
+  * @var int $user id of the klandre
+  *
+  * @throws InvalidArgumentException if the input was not strictly integers.
+  *
+  * @return mixed result of query
+ */
+function remove_klandring_from_user($klandring_id, $user) {
+    global $db;
+    assert($db !== null, "DB is not ready for remove_klandring_from_user.");
+
+    if (!is_numeric($klandring_id)) {
+        throw new InvalidArgumentException("remove_klandring_from_user function only accepts integers.  Input was: $klandring_id (".gettype($klandring_id)."), $user (".gettype($user).").");
+    }
+    
+    $sql = "DELETE FROM klandring WHERE (TIMESTAMPDIFF(HOUR, creationdate, NOW()) < 1 AND id=$klandring_id AND `from`=$user)";
+    return $db->query($sql);
+}
 ?>

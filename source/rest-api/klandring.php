@@ -113,7 +113,23 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         raise_success("Klandring successfully registered");
-        break;        
+        break;
+        
+    case "DELETE":
+        try {
+            if (isset($_GET["id"])) {
+                $result = remove_klandring_from_user($_GET["id"], $user["id"]);
+                if (!$result) {
+                    raise_error(404, "Could not find klandring, maybe you are not the klandre, or your window of deletion has expired.");
+                }
+
+                $row = $db->affected_rows;
+                raise_success("Succesfully deleted klandring:  " + $row["title"]);
+            }
+        } catch (InvalidArgumentException $e) {
+            raise_error(404);
+        }
+        break;
 
     default:
         raise_error(405);
