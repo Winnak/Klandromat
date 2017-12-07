@@ -112,7 +112,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
             post_klandring_meta($klandring_id, $user["id"], $file["type"], $file["name"], $target_filename);
         }
 
-        raise_success("Klandring successfully registered");
+        // raise_success("Klandring successfully registered at: $klandring_id");
+
+        http_response_code(200);
+        echo json_encode(array(
+            "code" => 200,
+            "message" => "Klandring successfully registered",
+            "id" => $klandring_id
+        ));
         break;
         
     case "DELETE":
