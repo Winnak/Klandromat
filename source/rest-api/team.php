@@ -16,6 +16,7 @@ if (isset($_GET["id"])) {
             raise_error(400);
         }
     }
+
     if (isset($_GET["students"])) {
         $students = [];
         foreach ($ids as $teamid) {
@@ -23,8 +24,7 @@ if (isset($_GET["id"])) {
         }
 
         echo json_encode($students);
-    }
-    else {
+    } else {
         echo json_encode(get_team_infos_arr($ids));
     }
 
