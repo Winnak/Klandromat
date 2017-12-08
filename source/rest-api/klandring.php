@@ -27,8 +27,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     $next = "SELECT * FROM klandring
                              WHERE creationdate $symbol (SELECT creationdate FROM `klandring`
                                                    WHERE id=$_GET[id]
-                                                     AND team=$_GET[team]
-                                                     AND `from`=$user[id])
+                                                     AND team=$_GET[team])
                                AND team=$_GET[team]
                              ORDER BY creationdate $order
                              LIMIT 1";
