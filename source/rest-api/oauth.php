@@ -11,7 +11,12 @@ if (isset($_GET["code"]) && isset($_GET["username"])) {
         )
     );
     $url = OAUTH_PROVIDER . "token?$query_params";
-    $result = file_get_contents($url);
+    $result = file_get_contents($url, false, stream_context_create([
+        "ssl" => [ // AU :(
+            "verify_peer" => false,
+            "verify_peer_name" => false,
+        ]
+    ]));
 
     if ($result !== FALSE) { 
         if(strpos($http_response_header[0], "200"))
